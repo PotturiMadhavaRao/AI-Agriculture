@@ -41,3 +41,8 @@ images/
 # OS
 .DS_Store
 Thumbs.db
+ai-service/dataset/
+ai-service/models/
+ai-service/plantvillage dataset/
+ai-service/venv/
+ai-service/__pycache__/
