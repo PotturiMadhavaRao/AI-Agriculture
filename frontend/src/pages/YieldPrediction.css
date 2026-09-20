@@ -1,474 +1,97 @@
-.yield-page {
-  min-height: 100vh;
-  padding: 40px 20px 70px;
-  background: #f5f8f3;
+/* Yield Prediction CSS */
+
+.yield-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
+.yield-form .input-group select {
+    padding: 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-btn);
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background-color: var(--color-bg-light);
+    color: var(--color-text-main);
+    width: 100%;
+}
 
-/* ==========================================
-   Header
-========================================== */
+.yield-form .input-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background-color: var(--color-white);
+}
 
-.yield-header {
-  max-width: 900px;
-  margin: 0 auto 40px;
-  text-align: center;
+.primary-yield-card {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    border: 1px solid #7dd3fc;
+    border-radius: var(--border-radius-card);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .yield-badge {
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 30px;
-  background: #e4f4e5;
-  color: #237a35;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 15px;
+    background-color: var(--color-info);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 20px;
 }
 
-.yield-header h1 {
-  margin: 0 0 12px;
-  font-size: 42px;
-  color: #17351f;
-}
-
-.yield-header p {
-  max-width: 700px;
-  margin: auto;
-  color: #657267;
-  line-height: 1.7;
-  font-size: 17px;
-}
-
-
-/* ==========================================
-   Main Container
-========================================== */
-
-.yield-container {
-  max-width: 1200px;
-  margin: auto;
-
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-}
-
-
-/* ==========================================
-   Cards
-========================================== */
-
-.yield-form-card,
-.yield-result-card {
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 8px 30px rgba(30, 70, 40, 0.08);
-}
-
-.yield-form-card h2,
-.yield-result-card h2 {
-  margin-top: 0;
-  color: #17351f;
-}
-
-.form-description {
-  color: #707970;
-  margin-bottom: 25px;
-}
-
-
-/* ==========================================
-   Form
-========================================== */
-
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 700;
-  color: #314438;
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  box-sizing: border-box;
-
-  padding: 13px 14px;
-
-  border: 1px solid #d7dfd8;
-  border-radius: 10px;
-
-  font-size: 15px;
-
-  outline: none;
-
-  background: #fbfdfb;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  border-color: #4d9b5b;
-  box-shadow: 0 0 0 3px rgba(77, 155, 91, 0.1);
-}
-
-.form-group small {
-  display: block;
-  margin-top: 6px;
-  color: #7c877e;
-}
-
-
-/* ==========================================
-   Buttons
-========================================== */
-
-.yield-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 25px;
-}
-
-.predict-button,
-.reset-button {
-  border: none;
-  border-radius: 10px;
-  padding: 13px 20px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.predict-button {
-  flex: 1;
-  background: #2f7d3c;
-  color: white;
-}
-
-.predict-button:hover {
-  background: #256b31;
-}
-
-.predict-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.reset-button {
-  background: #edf1ed;
-  color: #405145;
-}
-
-.reset-button:hover {
-  background: #e0e6e0;
-}
-
-
-/* ==========================================
-   Result Placeholder
-========================================== */
-
-.yield-result-card {
-  min-height: 550px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.result-placeholder {
-  text-align: center;
-  max-width: 400px;
-}
-
-.placeholder-icon {
-  font-size: 65px;
-  margin-bottom: 15px;
-}
-
-.result-placeholder h2 {
-  font-size: 24px;
-}
-
-.result-placeholder p {
-  color: #717b73;
-  line-height: 1.7;
-}
-
-
-/* ==========================================
-   Loading
-========================================== */
-
-.loading-spinner {
-  width: 48px;
-  height: 48px;
-
-  border: 5px solid #dce9de;
-  border-top: 5px solid #2f7d3c;
-
-  border-radius: 50%;
-
-  margin: 0 auto 20px;
-
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
-/* ==========================================
-   Error
-========================================== */
-
-.error-box {
-  width: 100%;
-  padding: 25px;
-  box-sizing: border-box;
-
-  border-radius: 14px;
-
-  background: #fff1f1;
-  border: 1px solid #f0caca;
-
-  color: #8c3030;
-}
-
-.error-box h2 {
-  color: #8c3030;
-}
-
-
-/* ==========================================
-   Prediction Result
-========================================== */
-
-.prediction-result {
-  width: 100%;
-}
-
-.success-label {
-  display: inline-block;
-
-  padding: 7px 12px;
-
-  border-radius: 20px;
-
-  background: #e5f5e7;
-  color: #27733a;
-
-  font-size: 13px;
-  font-weight: 700;
-
-  margin-bottom: 15px;
-}
-
-.prediction-result h2 {
-  margin-bottom: 20px;
-}
-
-
-/* ==========================================
-   Main Yield
-========================================== */
-
-.main-yield {
-  padding: 30px 20px;
-  margin-bottom: 25px;
-
-  text-align: center;
-
-  border-radius: 16px;
-
-  background: #edf7ee;
+.yield-value-group {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .yield-number {
-  display: block;
-
-  font-size: 54px;
-  font-weight: 800;
-
-  color: #287339;
+    margin: 0;
+    font-size: 64px;
+    font-weight: 800;
+    color: #0369a1;
 }
 
 .yield-unit {
-  display: block;
-
-  margin-top: 5px;
-
-  color: #607263;
-  font-weight: 600;
+    font-size: 24px;
+    font-weight: 600;
+    color: #0c4a6e;
 }
 
-
-/* ==========================================
-   Prediction Details
-========================================== */
-
-.prediction-details {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-  gap: 12px;
-
-  margin-bottom: 25px;
+.yield-summary {
+    font-size: 18px;
+    color: #0c4a6e;
+    margin: 0;
+    max-width: 500px;
+    line-height: 1.5;
 }
 
-.detail-item {
-  padding: 15px;
-
-  border-radius: 12px;
-
-  background: #f7f9f7;
+.yield-disclaimer {
+    background-color: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
 }
 
-.detail-item span {
-  display: block;
-
-  font-size: 13px;
-
-  color: #7a847b;
-
-  margin-bottom: 6px;
+.yield-disclaimer h3 {
+    margin: 0 0 10px;
+    color: #92400e;
+    font-size: 18px;
 }
 
-.detail-item strong {
-  color: #263b2b;
-}
-
-
-/* ==========================================
-   Farm Conditions
-========================================== */
-
-.farm-conditions {
-  margin-bottom: 25px;
-}
-
-.farm-conditions h3 {
-  margin-bottom: 15px;
-  color: #314a36;
-}
-
-.condition-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.condition-item {
-  padding: 15px;
-
-  border-radius: 12px;
-
-  background: #f7f9f7;
-}
-
-.condition-item span {
-  display: block;
-
-  font-size: 13px;
-
-  color: #7a847b;
-
-  margin-bottom: 6px;
-}
-
-.condition-item strong {
-  color: #263b2b;
-}
-
-
-/* ==========================================
-   Information
-========================================== */
-
-.yield-note {
-  padding: 18px;
-
-  border-radius: 12px;
-
-  background: #f7faf7;
-}
-
-.yield-note h3 {
-  margin-top: 0;
-  color: #314a36;
-}
-
-.yield-note p {
-  margin-bottom: 0;
-
-  color: #68736b;
-
-  line-height: 1.7;
-}
-
-
-/* ==========================================
-   Disclaimer
-========================================== */
-
-.disclaimer {
-  margin-top: 20px;
-
-  font-size: 12px;
-
-  line-height: 1.6;
-
-  color: #7d847e;
-}
-
-
-/* ==========================================
-   Responsive
-========================================== */
-
-@media (max-width: 850px) {
-
-  .yield-container {
-    grid-template-columns: 1fr;
-  }
-
-  .yield-header h1 {
-    font-size: 34px;
-  }
-}
-
-
-@media (max-width: 500px) {
-
-  .yield-page {
-    padding: 25px 12px 50px;
-  }
-
-  .yield-form-card,
-  .yield-result-card {
-    padding: 20px;
-  }
-
-  .prediction-details {
-    grid-template-columns: 1fr;
-  }
-
-  .condition-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .yield-buttons {
-    flex-direction: column;
-  }
-
-  .yield-number {
-    font-size: 42px;
-  }
+.yield-disclaimer p {
+    margin: 0;
+    color: #b45309;
+    font-size: 15px;
+    line-height: 1.6;
 }

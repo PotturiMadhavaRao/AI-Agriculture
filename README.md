@@ -191,19 +191,11 @@ Install Python dependencies:
 pip install -r requirements.txt
 ```
 
----
-
 # 🧠 5. AI Models
 
-The trained ML models are intentionally **not stored in GitHub** because they are large files.
+The trained ML models are not stored directly in GitHub because the model files are large.
 
-The AI service expects these model files inside:
-
-```text
-ai-service/models/
-```
-
-Required models:
+The AI service requires the following four models:
 
 ```text
 ai-service/models/
@@ -214,13 +206,47 @@ ai-service/models/
 └── yield_prediction_model.pkl
 ```
 
+### Download the Models
+
+Download the model package from Google Drive:
+
+**AI Agriculture Model Package:**  
+
+ `https://drive.google.com/file/d/1-bnDfd_8Rk9oH2Y3xbWeKx6RDQicO8-e/view?usp=drive_link`
+
+The downloaded file will be:
+
+```text
+ai-service-models.zip
+```
+
+### Extract the Models
+
+After downloading the ZIP file, extract its contents into:
+
+```text
+AI-Agriculture/ai-service/models/
+```
+
+After extraction, verify that the folder contains:
+
+```text
+AI-Agriculture/
+└── ai-service/
+    └── models/
+        ├── crop_recommendation_model.pkl
+        ├── disease_risk_model.pkl
+        ├── tomato_disease_model.keras
+        └── yield_prediction_model.pkl
+```
+
 ### Important
 
-These model files must be obtained separately before running AI predictions.
+Do **not** add the model files or `ai-service-models.zip` to Git.
 
-The project repository currently contains the AI source code and `requirements.txt`, but not the trained model files.
+They are already excluded by `.gitignore`.
 
----
+The GitHub repository contains the AI source code and `requirements.txt`, while the trained model files are distributed separately.
 
 # ▶️ 6. Start the AI Service
 

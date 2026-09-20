@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import PageHeader from "../components/PageHeader";
 import "./CropRecommendation.css";
 
 function CropRecommendation() {
@@ -6,9 +7,9 @@ function CropRecommendation() {
         N: "",
         P: "",
         K: "",
+        ph: "",
         temperature: "",
         humidity: "",
-        ph: "",
         rainfall: "",
     });
 
@@ -25,31 +26,18 @@ function CropRecommendation() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         setLoading(true);
         setError("");
         setResult(null);
 
         try {
-            const response = await fetch(
-                "http://localhost:5000/api/crop-recommendation/recommend",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
-
+            const response = await fetch("http://localhost:5000/api/crop-recommendation/recommend", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
             const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message || "Crop recommendation failed"
-                );
-            }
-
+            if (!response.ok) throw new Error(data.message || "Crop recommendation failed");
             setResult(data);
         } catch (err) {
             setError(err.message);
@@ -59,332 +47,171 @@ function CropRecommendation() {
     };
 
     const resetForm = () => {
-        setFormData({
-            N: "",
-            P: "",
-            K: "",
-            temperature: "",
-            humidity: "",
-            ph: "",
-            rainfall: "",
-        });
-
+        setFormData({ N: "", P: "", K: "", ph: "", temperature: "", humidity: "", rainfall: "" });
         setResult(null);
         setError("");
     };
 
     const formatCropName = (name) => {
         if (!name) return "";
-
-        return name
-            .replace(/_/g, " ")
-            .replace(/\b\w/g, (letter) => letter.toUpperCase());
+        return name.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
     };
 
     return (
-        <div className="crop-recommendation-page">
+        <div className="page-container">
+            <PageHeader 
+                title="Crop Recommendation" 
+                description="Find the most suitable crop for your farm based on soil nutrients and weather conditions." 
+            />
 
-            {/* Header */}
-            <div className="crop-header">
-                <span className="crop-badge">
-                    🌾 AI Crop Recommendation
-                </span>
-
-                <h1>
-                    Find the Right Crop for Your Farm
-                </h1>
-
-                <p>
-                    Enter your soil and weather conditions.
-                    Our AI model will recommend a suitable crop.
-                </p>
-            </div>
-
-            {/* Form */}
-            <div className="crop-form-card">
-
-                <h2>🌱 Farm Conditions</h2>
-
-                <p className="form-description">
-                    Enter the values available from your soil test
-                    and local weather conditions.
-                </p>
-
-                <form onSubmit={handleSubmit}>
-
-                    <div className="input-grid">
-
-                        <div className="input-group">
-                            <label>Nitrogen (N)</label>
-                            <input
-                                type="number"
-                                name="N"
-                                value={formData.N}
-                                onChange={handleChange}
-                                placeholder="Example: 90"
-                                required
-                            />
+            <div className="content-card">
+                <form onSubmit={handleSubmit} className="crop-form">
+                    
+                    <div className="form-section">
+                        <div className="section-header">
+                            <span className="section-icon">🌱</span>
+                            <h3>Step 1: Soil Information</h3>
                         </div>
-
-                        <div className="input-group">
-                            <label>Phosphorus (P)</label>
-                            <input
-                                type="number"
-                                name="P"
-                                value={formData.P}
-                                onChange={handleChange}
-                                placeholder="Example: 42"
-                                required
-                            />
+                        <p className="section-desc">Enter the nutrient values from your soil test.</p>
+                        
+                        <div className="input-grid">
+                            <div className="input-group">
+                                <label>Nitrogen (N)</label>
+                                <input type="number" name="N" value={formData.N} onChange={handleChange} placeholder="e.g. 90" required />
+                            </div>
+                            <div className="input-group">
+                                <label>Phosphorus (P)</label>
+                                <input type="number" name="P" value={formData.P} onChange={handleChange} placeholder="e.g. 42" required />
+                            </div>
+                            <div className="input-group">
+                                <label>Potassium (K)</label>
+                                <input type="number" name="K" value={formData.K} onChange={handleChange} placeholder="e.g. 43" required />
+                            </div>
+                            <div className="input-group">
+                                <label>Soil pH</label>
+                                <input type="number" step="0.1" name="ph" value={formData.ph} onChange={handleChange} placeholder="e.g. 6.5" required />
+                            </div>
                         </div>
-
-                        <div className="input-group">
-                            <label>Potassium (K)</label>
-                            <input
-                                type="number"
-                                name="K"
-                                value={formData.K}
-                                onChange={handleChange}
-                                placeholder="Example: 43"
-                                required
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Temperature (°C)</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="temperature"
-                                value={formData.temperature}
-                                onChange={handleChange}
-                                placeholder="Example: 21"
-                                required
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Humidity (%)</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="humidity"
-                                value={formData.humidity}
-                                onChange={handleChange}
-                                placeholder="Example: 82"
-                                required
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Soil pH</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="ph"
-                                value={formData.ph}
-                                onChange={handleChange}
-                                placeholder="Example: 6.5"
-                                required
-                            />
-                        </div>
-
-                        <div className="input-group">
-                            <label>Rainfall (mm)</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="rainfall"
-                                value={formData.rainfall}
-                                onChange={handleChange}
-                                placeholder="Example: 203"
-                                required
-                            />
-                        </div>
-
                     </div>
 
-                    <button
-                        type="submit"
-                        className="recommend-button"
-                        disabled={loading}
-                    >
-                        {loading
-                            ? "🤖 Analyzing..."
-                            : "🌾 Recommend Crop"}
-                    </button>
+                    <hr className="form-divider" />
+
+                    <div className="form-section">
+                        <div className="section-header">
+                            <span className="section-icon">⛅</span>
+                            <h3>Step 2: Weather Information</h3>
+                        </div>
+                        <p className="section-desc">Enter current or average weather conditions.</p>
+                        
+                        <div className="input-grid">
+                            <div className="input-group">
+                                <label>Temperature (°C)</label>
+                                <input type="number" step="0.1" name="temperature" value={formData.temperature} onChange={handleChange} placeholder="e.g. 21.0" required />
+                            </div>
+                            <div className="input-group">
+                                <label>Humidity (%)</label>
+                                <input type="number" step="0.1" name="humidity" value={formData.humidity} onChange={handleChange} placeholder="e.g. 82.0" required />
+                            </div>
+                            <div className="input-group">
+                                <label>Rainfall (mm)</label>
+                                <input type="number" step="0.1" name="rainfall" value={formData.rainfall} onChange={handleChange} placeholder="e.g. 203.0" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    {error && <div className="error-alert">❌ {error}</div>}
+
+                    <div className="form-actions">
+                        <button type="submit" className="btn-primary btn-large" disabled={loading}>
+                            {loading ? "🤖 Finding Best Crop..." : "🌾 Recommend Crop"}
+                        </button>
+                    </div>
 
                 </form>
-
             </div>
 
-            {/* Error */}
-            {error && (
-                <div className="crop-error">
-                    ❌ {error}
-                </div>
-            )}
-
-            {/* Result */}
             {result && result.recommendation && (
-                <div className="crop-result">
+                <div className="result-container">
+                    <h2 className="result-heading">Recommendation Result</h2>
 
-                    {/* Main Recommendation */}
-                    <div className="recommended-card">
-
-                        <span className="result-label">
-                            🤖 AI Recommendation
-                        </span>
-
-                        <h2>
-                            {formatCropName(
-                                result.recommendation.recommended_crop
-                            )}
-                        </h2>
-
-                        <p>
-                            AI Confidence:{" "}
-                            <strong>
-                                {result.recommendation.confidence}%
-                            </strong>
-                        </p>
-
-                        <div className="confidence-bar">
-                            <div
-                                className="confidence-fill"
-                                style={{
-                                    width: `${result.recommendation.confidence}%`,
-                                }}
-                            ></div>
+                    <div className="primary-recommendation">
+                        <div className="recommended-crop-info">
+                            <span className="result-badge">Top Match</span>
+                            <h2 className="recommended-crop-name">{formatCropName(result.recommendation.recommended_crop)}</h2>
                         </div>
-
+                        
+                        <div className="confidence-display">
+                            <span className="confidence-label">AI Confidence</span>
+                            <span className="confidence-value">{result.recommendation.confidence}%</span>
+                        </div>
                     </div>
 
-                    {/* Crop Information */}
                     {result.cropInfo && (
-                        <div className="crop-info-card">
-
-                            <div className="crop-info-header">
-                                <span>🌱</span>
-
-                                <div>
-                                    <h2>
-                                        {result.cropInfo.name}
-                                    </h2>
-
-                                    <p>
-                                        {result.cropInfo.scientificName}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="crop-info-grid">
-
-                                <div className="info-item">
-                                    <span>🌦️</span>
-                                    <div>
+                        <div className="crop-details">
+                            <h3>📖 About {result.cropInfo.name}</h3>
+                            <p className="crop-scientific">({result.cropInfo.scientificName})</p>
+                            <p className="crop-description-text">{result.cropInfo.description}</p>
+                            
+                            <div className="crop-requirements-grid">
+                                <div className="req-item">
+                                    <span className="req-icon">🌦️</span>
+                                    <div className="req-text">
                                         <small>Season</small>
-                                        <strong>
-                                            {result.cropInfo.season}
-                                        </strong>
+                                        <strong>{result.cropInfo.season}</strong>
                                     </div>
                                 </div>
-
-                                <div className="info-item">
-                                    <span>💧</span>
-                                    <div>
-                                        <small>Water Requirement</small>
-                                        <strong>
-                                            {result.cropInfo.waterRequirement}
-                                        </strong>
+                                <div className="req-item">
+                                    <span className="req-icon">💧</span>
+                                    <div className="req-text">
+                                        <small>Water</small>
+                                        <strong>{result.cropInfo.waterRequirement}</strong>
                                     </div>
                                 </div>
-
-                                <div className="info-item">
-                                    <span>🌱</span>
-                                    <div>
-                                        <small>Suitable Soil</small>
-                                        <strong>
-                                            {result.cropInfo.soilTypes?.join(", ")}
-                                        </strong>
+                                <div className="req-item">
+                                    <span className="req-icon">🌱</span>
+                                    <div className="req-text">
+                                        <small>Soil Types</small>
+                                        <strong>{result.cropInfo.soilTypes?.join(", ")}</strong>
                                     </div>
                                 </div>
-
-                                <div className="info-item">
-                                    <span>📅</span>
-                                    <div>
+                                <div className="req-item">
+                                    <span className="req-icon">📅</span>
+                                    <div className="req-text">
                                         <small>Growth Duration</small>
-                                        <strong>
-                                            {result.cropInfo.growthDuration}
-                                        </strong>
+                                        <strong>{result.cropInfo.growthDuration}</strong>
                                     </div>
                                 </div>
-
                             </div>
-
-                            <div className="crop-description">
-                                <h3>📖 About This Crop</h3>
-
-                                <p>
-                                    {result.cropInfo.description}
-                                </p>
-                            </div>
-
                         </div>
                     )}
 
-                    {/* Top Recommendations */}
-                    {result.recommendation.top_recommendations &&
-                        result.recommendation.top_recommendations.length > 0 && (
-                            <div className="top-recommendations">
-
-                                <h2>🌾 Top AI Recommendations</h2>
-
-                                {result.recommendation.top_recommendations.map(
-                                    (item, index) => (
-                                        <div
-                                            className="recommendation-row"
-                                            key={item.crop}
-                                        >
-
-                                            <span className="rank">
-                                                #{index + 1}
-                                            </span>
-
-                                            <span className="crop-name">
-                                                {formatCropName(item.crop)}
-                                            </span>
-
-                                            <div className="small-confidence-bar">
-                                                <div
-                                                    style={{
-                                                        width: `${item.confidence}%`,
-                                                    }}
-                                                ></div>
-                                            </div>
-
-                                            <span className="percentage">
-                                                {item.confidence}%
-                                            </span>
-
+                    {result.recommendation.top_recommendations?.length > 1 && (
+                        <div className="other-recommendations">
+                            <h3>Other Suitable Crops</h3>
+                            <div className="other-crops-list">
+                                {result.recommendation.top_recommendations.slice(1).map((item, index) => (
+                                    <div className="other-crop-item" key={item.crop}>
+                                        <div className="other-crop-name">
+                                            <span className="rank-badge">#{index + 2}</span>
+                                            {formatCropName(item.crop)}
                                         </div>
-                                    )
-                                )}
-
+                                        <div className="other-crop-confidence">
+                                            <div className="confidence-bar-bg">
+                                                <div className="confidence-bar-fill" style={{ width: `${item.confidence}%` }}></div>
+                                            </div>
+                                            <span>{item.confidence}%</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        )}
+                        </div>
+                    )}
 
-                    {/* Reset */}
-                    <button
-                        className="reset-button"
-                        onClick={resetForm}
-                    >
-                        🔄 Try Another Recommendation
-                    </button>
-
+                    <div className="action-section">
+                        <button className="btn-secondary" onClick={resetForm}>🔄 Try Another Farm</button>
+                    </div>
                 </div>
             )}
-
         </div>
     );
 }

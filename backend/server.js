@@ -1,6 +1,6 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 
 const connectDB = require("./config/db");
 
@@ -12,10 +12,10 @@ const aiRoutes = require("./routes/aiRoutes");
 const cropRecommendationRoutes = require("./routes/cropRecommendationRoutes");
 const yieldPredictionRoutes = require("./routes/yieldPredictionRoutes");
 const diseaseRiskRoutes = require("./routes/diseaseRiskRoutes");
-const cropLifeCycleRoutes = require("./routes/cropLifeCycleRoutes");
-const researchRoutes = require("./routes/researchRoutes");
-
-dotenv.config();
+const cropLifeCycleRoutes = require('./routes/cropLifeCycleRoutes');
+const researchRoutes = require('./routes/researchRoutes');
+const translateRoutes = require('./routes/translateRoutes');
+const aiResearchRoutes = require("./routes/aiResearchRoutes");
 
 const app = express();
 
@@ -37,8 +37,10 @@ app.use("/api/ai", aiRoutes);
 app.use("/api/crop-recommendation", cropRecommendationRoutes);
 app.use("/api/yield-prediction", yieldPredictionRoutes);
 app.use("/api/disease-risk", diseaseRiskRoutes);
-app.use("/api/crop-life-cycle", cropLifeCycleRoutes);
-app.use("/api/research", researchRoutes);
+app.use('/api/crop-life-cycle', cropLifeCycleRoutes);
+app.use('/api/research', researchRoutes);
+app.use('/api/translate', translateRoutes);
+app.use("/api/ai-research", aiResearchRoutes);
 
 
 // Home route

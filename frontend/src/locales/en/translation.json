@@ -1,0 +1,48 @@
+{
+    "sidebar": {
+        "home": "Home",
+        "diseaseDetection": "Disease Detection",
+        "cropRecommendation": "Crop Recommendation",
+        "yieldPrediction": "Yield Prediction",
+        "diseaseRisk": "Disease Risk",
+        "cropLifeCycle": "Crop Life Cycle",
+        "researchAssistant": "Research Assistant",
+        "weatherAdvisory": "Weather & Advisory",
+        "governmentSchemes": "Government Schemes",
+        "myFarm": "My Farm",
+        "helpSupport": "Help & Support",
+        "farmerSupport": "Farmer Support: 1800-180-1551"
+    },
+    "header": {
+        "welcome": "Welcome, Farmer",
+        "language": "Language",
+        "languageSelect": "Select Language"
+    },
+    "dashboard": {
+        "welcomeTitle": "Welcome to AgriAI",
+        "welcomeDesc": "Your smart farming assistant for healthier crops, better decisions and higher yields.",
+        "exploreFeatures": "Explore Features",
+        "features": {
+            "diseaseDetection": "Identify crop diseases from leaf images instantly.",
+            "cropRecommendation": "Find the best crop for your soil and weather.",
+            "yieldPrediction": "Estimate your harvest yield based on conditions.",
+            "diseaseRisk": "Assess the risk of diseases based on weather.",
+            "cropLifeCycle": "View stages of crop growth and required care.",
+            "researchAssistant": "Ask agricultural questions to our AI assistant.",
+            "weatherAdvisory": "Get local weather forecasts and farm advisories.",
+            "governmentSchemes": "Find financial support and farming schemes."
+        }
+    },
+    "common": {
+        "analyze": "Analyze",
+        "predict": "Predict",
+        "recommend": "Recommend",
+        "check": "Check",
+        "loading": "Loading...",
+        "error": "Error",
+        "tryAgain": "Try Again",
+        "reset": "Reset",
+        "backToDashboard": "Back to Dashboard",
+        "aiEstimateDisclaimer": "This is an AI-based estimate and should be used as decision-support information, not as a guaranteed harvest result."
+    }
+}

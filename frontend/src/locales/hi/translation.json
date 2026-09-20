@@ -1,0 +1,48 @@
+{
+    "sidebar": {
+        "home": "होम",
+        "diseaseDetection": "रोग की पहचान",
+        "cropRecommendation": "फसल की सिफारिश",
+        "yieldPrediction": "उपज की भविष्यवाणी",
+        "diseaseRisk": "रोग का खतरा",
+        "cropLifeCycle": "फसल का जीवन चक्र",
+        "researchAssistant": "अनुसंधान सहायक",
+        "weatherAdvisory": "मौसम और सलाह",
+        "governmentSchemes": "सरकारी योजनाएं",
+        "myFarm": "मेरा खेत",
+        "helpSupport": "सहायता और समर्थन",
+        "farmerSupport": "किसान सहायता: 1800-180-1551"
+    },
+    "header": {
+        "welcome": "स्वागत है, किसान",
+        "language": "भाषा",
+        "languageSelect": "भाषा चुनें"
+    },
+    "dashboard": {
+        "welcomeTitle": "AgriAI में आपका स्वागत है",
+        "welcomeDesc": "स्वस्थ फसलों, बेहतर निर्णयों और उच्च उपज के लिए आपका स्मार्ट खेती सहायक।",
+        "exploreFeatures": "सुविधाओं का अन्वेषण करें",
+        "features": {
+            "diseaseDetection": "पत्ती के चित्रों से फसल के रोगों की तुरंत पहचान करें।",
+            "cropRecommendation": "अपनी मिट्टी और मौसम के लिए सबसे अच्छी फसल खोजें।",
+            "yieldPrediction": "स्थितियों के आधार पर अपनी फसल की उपज का अनुमान लगाएं।",
+            "diseaseRisk": "मौसम के आधार पर बीमारियों के जोखिम का आकलन करें।",
+            "cropLifeCycle": "फसल वृद्धि के चरण और आवश्यक देखभाल देखें।",
+            "researchAssistant": "हमारे एआई सहायक से कृषि संबंधी प्रश्न पूछें।",
+            "weatherAdvisory": "स्थानीय मौसम पूर्वानुमान और खेत की सलाह प्राप्त करें।",
+            "governmentSchemes": "वित्तीय सहायता और खेती की योजनाएं खोजें।"
+        }
+    },
+    "common": {
+        "analyze": "विश्लेषण करें",
+        "predict": "भविष्यवाणी करें",
+        "recommend": "सिफारिश करें",
+        "check": "जांचें",
+        "loading": "लोड हो रहा है...",
+        "error": "त्रुटि",
+        "tryAgain": "पुनः प्रयास करें",
+        "reset": "रीसेट",
+        "backToDashboard": "डैशबोर्ड पर वापस जाएं",
+        "aiEstimateDisclaimer": "यह एक एआई-आधारित अनुमान है और इसे निर्णय-समर्थन जानकारी के रूप में उपयोग किया जाना चाहिए, न कि गारंटीकृत फसल परिणाम के रूप में।"
+    }
+}
