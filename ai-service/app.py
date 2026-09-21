@@ -38,6 +38,21 @@ class_names = [
     "late_blight"
 ]
 
+# -----------------------------
+# Load Validation Model (if exists)
+# -----------------------------
+import os
+import cv2
+
+VALIDATION_MODEL_PATH = "models/tomato_validation_model.keras"
+if os.path.exists(VALIDATION_MODEL_PATH):
+    validation_model = tf.keras.models.load_model(VALIDATION_MODEL_PATH)
+    print("Tomato leaf validation model loaded successfully")
+else:
+    validation_model = None
+    print("Warning: Validation model not found. Using heuristic fallback.")
+
+DISEASE_CONFIDENCE_THRESHOLD = 70.0
 
 # ==========================================
 # Crop Recommendation Model
@@ -218,21 +233,68 @@ async def predict(file: UploadFile = File(...)):
 
         # Read uploaded image
         image_bytes = await file.read()
-
-        # Open image
-        image = Image.open(
-            io.BytesIO(image_bytes)
-        )
+        
+        # Check basic image format
+        try:
+            image = Image.open(io.BytesIO(image_bytes))
+            image.verify()  # verify format
+            image = Image.open(io.BytesIO(image_bytes)) # reopen after verify
+        except Exception as e:
+            return {
+                "valid_image": False,
+                "prediction": None,
+                "confidence": 0,
+                "status": "invalid_image",
+                "message": "The uploaded file is not a valid or supported image."
+            }
 
         # Convert to RGB
         image = image.convert("RGB")
 
-        # Resize image
-        image = image.resize((224, 224))
+        # -----------------------------
+        # Tomato Leaf Validation
+        # -----------------------------
+        # Resize for models
+        resized_image = image.resize((224, 224))
+        image_array = np.array(resized_image)
+        
+        is_tomato_leaf = True
+        
+        TOMATO_VALIDATION_THRESHOLD = 0.70
+        if validation_model:
+            # Use trained binary classifier
+            val_input = np.expand_dims(image_array, axis=0)
+            val_pred = validation_model.predict(val_input)[0][0]
+            is_tomato_leaf = val_pred > TOMATO_VALIDATION_THRESHOLD
+        else:
+            # Heuristic fallback (Green/Yellow/Brown pixel ratio for leaves)
+            hsv_image = cv2.cvtColor(image_array, cv2.COLOR_RGB2HSV)
+            # Define range for leaf colors (green, yellow, some brown)
+            lower_color = np.array([20, 30, 30])
+            upper_color = np.array([90, 255, 255])
+            mask = cv2.inRange(hsv_image, lower_color, upper_color)
+            leaf_ratio = cv2.countNonZero(mask) / (224 * 224)
+            print(f"Leaf color pixel ratio: {leaf_ratio:.4f}")
+            
+            # Require at least 5% of the image to be leaf-colored
+            if leaf_ratio < 0.05:
+                is_tomato_leaf = False
 
-        # Convert to NumPy array
-        image_array = np.array(image)
+        if not is_tomato_leaf:
+            return {
+                "success": True,
+                "valid_image": False,
+                "is_tomato_leaf": False,
+                "prediction": None,
+                "confidence": None,
+                "status": "invalid_image",
+                "message": "⚠️ Please upload a clear tomato leaf image."
+            }
 
+
+        # -----------------------------
+        # Disease Prediction
+        # -----------------------------
         # Add batch dimension
         image_array = np.expand_dims(
             image_array,
@@ -257,6 +319,18 @@ async def predict(file: UploadFile = File(...)):
             predictions[0][predicted_index]
         ) * 100
 
+        # Confidence Threshold Check
+        if confidence < DISEASE_CONFIDENCE_THRESHOLD:
+            return {
+                "success": True,
+                "valid_image": True,
+                "is_tomato_leaf": True,
+                "prediction": None,
+                "confidence": round(confidence, 2),
+                "status": "uncertain",
+                "message": "⚠️ The image is unclear or outside the supported disease classes. Please upload a clearer tomato leaf image."
+            }
+
         # Get disease information
         info = disease_information.get(
             predicted_class,
@@ -270,11 +344,21 @@ async def predict(file: UploadFile = File(...)):
             }
         )
 
+        status_value = "healthy" if predicted_class == "healthy" else "disease_detected"
+        
+        msg = "Healthy tomato leaf detected. No disease detected." if predicted_class == "healthy" else f"{predicted_class.replace('_', ' ').title()} detected in the tomato leaf."
+
         return {
             "success": True,
+            "valid_image": True,
+            "is_tomato_leaf": True,
             "filename": file.filename,
-            "disease": predicted_class,
+            "prediction": predicted_class,
+            "disease": predicted_class, # keep disease for backward compatibility just in case
             "confidence": round(confidence, 2),
+            "display_confidence": f"{round(confidence)}%",
+            "status": status_value,
+            "message": msg,
             "information": info
         }
 

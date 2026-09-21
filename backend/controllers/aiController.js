@@ -41,6 +41,11 @@ const predictDisease = async (req, res) => {
 
     console.log("AI Prediction:", prediction);
 
+    // If image is invalid or uncertain, return immediately passing all properties
+    if (prediction.valid_image === false || prediction.status === "invalid_image" || prediction.status === "uncertain") {
+      return res.json(prediction);
+    }
+
     // Convert AI class name to database disease name
     const diseaseNameMap = {
       early_blight: "Early Blight",
@@ -48,17 +53,13 @@ const predictDisease = async (req, res) => {
     };
 
     const databaseDiseaseName =
-      diseaseNameMap[prediction.disease];
+      diseaseNameMap[prediction.prediction];
 
     // Healthy plant does not need disease lookup
     if (!databaseDiseaseName) {
       return res.json({
+        ...prediction,
         success: true,
-        prediction: {
-          disease: prediction.disease,
-          confidence: prediction.confidence,
-        },
-        information: prediction.information || null,
         treatments: [],
       });
     }
@@ -73,12 +74,8 @@ const predictDisease = async (req, res) => {
 
     if (!disease) {
       return res.json({
+        ...prediction,
         success: true,
-        prediction: {
-          disease: prediction.disease,
-          confidence: prediction.confidence,
-        },
-        information: prediction.information || null,
         treatments: [],
         message: "Disease prediction found, but disease information is not in the database yet.",
       });
@@ -91,12 +88,8 @@ const predictDisease = async (req, res) => {
 
     // Send final response
     res.json({
+      ...prediction,
       success: true,
-
-      prediction: {
-        disease: prediction.disease,
-        confidence: prediction.confidence,
-      },
 
       disease: {
         id: disease._id,

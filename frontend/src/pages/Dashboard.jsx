@@ -69,6 +69,7 @@ function Dashboard() {
                             description={t("dashboard.features.diseaseDetection")} 
                             link="/disease-detection" 
                             type="disease"
+                            image="/DiseaseDetection.jpeg"
                         />
                         <FeatureCard 
                             icon="🌾" 
@@ -76,36 +77,42 @@ function Dashboard() {
                             description={t("dashboard.features.cropRecommendation")} 
                             link="/crop-recommendation" 
                             type="crop"
+                            image="/CropRecommendation.jpeg"
                         />
                         <FeatureCard 
                             icon="📈" 
                             title={t("sidebar.yieldPrediction")} 
                             description={t("dashboard.features.yieldPrediction")} 
                             link="/yield-prediction" 
+                            image="/YieldPrediction.jpeg"
                         />
                         <FeatureCard 
                             icon="🤖" 
                             title={t("sidebar.researchAssistant")} 
                             description={t("dashboard.features.researchAssistant")} 
                             link="/research" 
+                            image="/ResearchAssistant.jpeg"
                         />
                         <FeatureCard 
                             icon="⚠️" 
                             title={t("sidebar.diseaseRisk")} 
                             description={t("dashboard.features.diseaseRisk")} 
                             link="/disease-risk" 
+                            image="https://images.unsplash.com/photo-1592982537447-6f2334f55333?auto=format&fit=crop&w=400&q=80"
                         />
                         <FeatureCard 
                             icon="🌱" 
                             title={t("sidebar.cropLifeCycle")} 
                             description={t("dashboard.features.cropLifeCycle")} 
                             link="/crop-life-cycle" 
+                            image="https://images.unsplash.com/photo-1595841696677-6479ff3f62eb?auto=format&fit=crop&w=400&q=80"
                         />
                         <FeatureCard 
                             icon="⛅" 
                             title={t("sidebar.weatherAdvisory")} 
                             description={t("dashboard.features.weatherAdvisory")} 
                             link="/weather" 
+                            image="https://images.unsplash.com/photo-1530908295418-a12e326966ba?auto=format&fit=crop&w=400&q=80"
                         />
                     </div>
                 </div>

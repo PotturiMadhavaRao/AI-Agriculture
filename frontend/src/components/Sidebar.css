@@ -136,6 +136,16 @@
     color: #17324D; /* Maintain contrast for lighter yellow/green */
 }
 
+.nav-item.nav-gov-schemes.active {
+    background: linear-gradient(135deg, #FF9F1C, #FFD23F); /* Orange/Yellow */
+    box-shadow: 0 4px 10px rgba(255, 159, 28, 0.25);
+}
+
+.nav-item.nav-my-farm.active {
+    background: linear-gradient(135deg, #22A447, #58C93A); /* Green */
+    box-shadow: 0 4px 10px rgba(34, 164, 71, 0.25);
+}
+
 .nav-item.disabled {
     opacity: 0.5;
     cursor: not-allowed;

@@ -48,7 +48,18 @@ function DiseaseDetection() {
 
         if (!aiResponse.ok) throw new Error("Prediction request failed");
         const aiData = await aiResponse.json();
-        const predictedDisease = aiData.prediction?.disease;
+        
+        if (aiData.valid_image === false) {
+             setResult(aiData);
+             return;
+        }
+        
+        if (aiData.status === "uncertain") {
+             setResult(aiData);
+             return;
+        }
+
+        const predictedDisease = aiData.prediction;
 
         if (predictedDisease && predictedDisease !== "healthy") {
             let diseaseName = predictedDisease;
@@ -104,8 +115,8 @@ function DiseaseDetection() {
   };
 
   const getDiseaseName = () => {
-    if (!result?.prediction?.disease) return "Unknown";
-    const disease = result.prediction.disease;
+    if (!result?.prediction) return "Unknown";
+    const disease = result.prediction;
     if (disease === "early_blight") return "Early Blight";
     if (disease === "late_blight") return "Late Blight";
     if (disease === "healthy") return "Healthy Crop";
@@ -113,7 +124,9 @@ function DiseaseDetection() {
   };
 
   const getResultStatus = () => {
-    return result?.prediction?.disease === "healthy" ? t("diseaseDetection.healthy") : t("diseaseDetection.diseaseDetected");
+    if (result?.status === "invalid_image" || result?.valid_image === false) return "Invalid Image";
+    if (result?.status === "uncertain") return "Uncertain";
+    return result?.prediction === "healthy" ? t("diseaseDetection.healthy", "Healthy Tomato Plant") : t("diseaseDetection.diseaseDetected", "Disease Detected");
   };
 
   return (
@@ -128,15 +141,15 @@ function DiseaseDetection() {
           <div className="upload-section">
             <label className="upload-box">
               <div className="upload-icon-large">📸</div>
-              <h3>{t("diseaseDetection.uploadTitle")}</h3>
-              <p>{t("diseaseDetection.uploadDesc")}</p>
+              <h3>{t("diseaseDetection.uploadInstruction", "Take a clear photo of the crop leaf and upload it for analysis.")}</h3>
+              <p>{t("diseaseDetection.uploadSubInstruction", "🌿 Please upload a clear leaf image first.")}</p>
               <span className="btn-primary">{t("diseaseDetection.chooseImage")}</span>
               <input type="file" accept="image/*" onChange={handleFileChange} hidden />
             </label>
           </div>
         ) : (
           <div className="preview-section">
-            <img src={preview} alt="Crop leaf preview" className="image-preview" />
+            <img src={preview} alt="Tomato leaf preview" className="image-preview" />
             <div className="preview-actions">
               <p className="file-name">{selectedFile?.name}</p>
               <button className="btn-secondary" onClick={handleReset}>{t("diseaseDetection.changeImage")}</button>
@@ -159,67 +172,122 @@ function DiseaseDetection() {
         <div className="result-container">
           <h2 className="result-heading">{t("diseaseDetection.resultHeading")}</h2>
           
-          <div className={`status-card ${result?.prediction?.disease === 'healthy' ? 'healthy' : 'danger'}`}>
-            <div className="status-header">
-              <span className="status-icon">{result?.prediction?.disease === 'healthy' ? '✅' : '🦠'}</span>
-              <div className="status-info">
-                <span className="status-label">{t("diseaseDetection.status")}</span>
-                <h3 className="status-value">{getResultStatus()}</h3>
-              </div>
-            </div>
-            <div className="confidence-badge">
-              {result.prediction?.confidence}% {t("diseaseDetection.confidence")}
-            </div>
-          </div>
-
-          {result?.prediction?.disease !== 'healthy' && (
-            <div className="disease-details-card">
-              <h3 className="detail-title">{t("diseaseDetection.detectedCondition")}: {getDiseaseName()}</h3>
-              {result.disease?.cause && <p className="detail-cause"><strong>{t("diseaseDetection.cause")}:</strong> {result.disease.cause}</p>}
-            </div>
-          )}
-
-          {result.disease?.symptoms?.length > 0 && (
-            <div className="info-block">
-              <h3>{t("diseaseDetection.symptoms")}</h3>
-              <ul>
-                {result.disease.symptoms.map((symptom, idx) => <li key={idx}>{symptom}</li>)}
-              </ul>
-            </div>
-          )}
-
-          {result.disease?.prevention?.length > 0 && (
-            <div className="info-block">
-              <h3>{t("diseaseDetection.prevention")}</h3>
-              <ul>
-                {result.disease.prevention.map((item, idx) => <li key={idx}>{item}</li>)}
-              </ul>
-            </div>
-          )}
-
-          {result.treatments?.length > 0 && (
-            <div className="info-block">
-              <h3>{t("diseaseDetection.management")}</h3>
-              <div className="treatments-grid">
-                {result.treatments.map((treatment) => (
-                  <div className="treatment-item" key={treatment.id}>
-                    <span className="treatment-badge">{treatment.treatmentType}</span>
-                    <p>{treatment.recommendation}</p>
-                    {treatment.activeIngredient && <p><strong>{t("diseaseDetection.activeIngredient")}:</strong> {treatment.activeIngredient}</p>}
-                    {treatment.safetyPrecautions?.length > 0 && (
-                      <div className="safety-warning">
-                        <strong>{t("diseaseDetection.safetyPrecautions")}</strong>
-                        <ul>
-                          {treatment.safetyPrecautions.map((precaution, idx) => <li key={idx}>{precaution}</li>)}
-                        </ul>
-                      </div>
-                    )}
+          {(result.valid_image === false || result.status === "invalid_image" || result.status === "uncertain") ? (
+             <div className="status-card danger">
+               <div className="status-header">
+                 <span className="status-icon">⚠️</span>
+                 <div className="status-info">
+                   <span className="status-label">{t("diseaseDetection.status", "Status")}</span>
+                   <h3 className="status-value">{getResultStatus()}</h3>
+                 </div>
+               </div>
+               <div className="info-block" style={{ marginTop: '15px' }}>
+                 <p style={{ fontSize: '18px', fontWeight: '500' }}>{result.message}</p>
+               </div>
+             </div>
+          ) : (
+            <>
+              <div className={`status-card ${result?.prediction === 'healthy' ? 'healthy' : 'danger'}`}>
+                <div className="status-header">
+                  <span className="status-icon">{result?.prediction === 'healthy' ? '🌿' : '⚠️'}</span>
+                  <div className="status-info">
+                    <span className="status-label">{t("diseaseDetection.status")}</span>
+                    <h3 className="status-value">
+                        {result?.prediction === 'healthy' ? t("diseaseDetection.healthyText", "Healthy Crop") : t("diseaseDetection.diseaseDetected", "Disease Detected")}
+                    </h3>
                   </div>
-                ))}
+                </div>
+                <div className="confidence-badge">
+                  {result.prediction === 'healthy' ? 'Healthy' : getDiseaseName()}
+                </div>
+                <div className="confidence-badge" style={{marginTop: "10px"}}>
+                  {result.confidence}% {t("diseaseDetection.confidence", "Confidence")}
+                </div>
               </div>
-            </div>
-          )}
 
+              {result?.prediction !== 'healthy' && (
+                <div className="disease-details-card">
+                  <h3 className="detail-title">{t("diseaseDetection.detectedCondition", "Disease Detected")}: {getDiseaseName()}</h3>
+                  {result.disease?.cause && <p className="detail-cause"><strong>{t("diseaseDetection.cause")}:</strong> {result.disease.cause}</p>}
+                </div>
+              )}
+
+              {result.prediction === 'healthy' && (
+                <div className="info-block healthy-block">
+                  <h3 style={{ color: 'var(--color-primary)' }}>{t("diseaseDetection.keepPlantHealthy", "🌱 Keep the plant healthy")}</h3>
+                  <p>{t("diseaseDetection.healthyMessage", "Your tomato leaf appears healthy and no supported tomato disease was detected.")}</p>
+                  <ul>
+                    <li>{t("diseaseDetection.healthyTips1", "Maintain proper irrigation.")}</li>
+                    <li>{t("diseaseDetection.healthyTips2", "Maintain good air circulation.")}</li>
+                    <li>{t("diseaseDetection.healthyTips3", "Monitor leaves regularly.")}</li>
+                    <li>{t("diseaseDetection.healthyTips4", "Remove severely damaged plant material.")}</li>
+                    <li>{t("diseaseDetection.healthyTips5", "Watch for new symptoms.")}</li>
+                  </ul>
+                  <p style={{ fontWeight: '600', marginTop: '15px' }}>
+                    {t("diseaseDetection.continueMonitoring", "🔍 Continue monitoring your crop.")}
+                  </p>
+                </div>
+              )}
+
+              {result.prediction !== 'healthy' && result.disease?.symptoms?.length > 0 && (
+                <div className="info-block">
+                  <h3>{t("diseaseDetection.symptoms", "🌿 Symptoms")}</h3>
+                  <ul>
+                    {result.disease.symptoms.map((symptom, idx) => <li key={idx}>{symptom}</li>)}
+                  </ul>
+                </div>
+              )}
+
+              {result.prediction !== 'healthy' && result.disease?.favorableConditions?.length > 0 && (
+                <div className="info-block">
+                  <h3>{t("diseaseDetection.favorableConditions", "🌦️ Favorable Conditions")}</h3>
+                  <ul>
+                    {result.disease.favorableConditions.map((item, idx) => <li key={idx}>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+
+              {result.prediction !== 'healthy' && result.disease?.prevention?.length > 0 && (
+                <div className="info-block">
+                  <h3>{t("diseaseDetection.prevention", "🛡️ Prevention")}</h3>
+                  <ul>
+                    {result.disease.prevention.map((item, idx) => <li key={idx}>{item}</li>)}
+                  </ul>
+                </div>
+              )}
+
+              {result.prediction !== 'healthy' && result.treatments?.length > 0 && (
+                <div className="info-block">
+                  <h3>{t("diseaseDetection.management", "💊 Treatment & Management")}</h3>
+                  <div className="treatments-grid">
+                    {result.treatments.map((treatment) => (
+                      <div className="treatment-item" key={treatment.id}>
+                        <span className="treatment-badge">{treatment.treatmentType}</span>
+                        <p>{treatment.recommendation}</p>
+                        {treatment.activeIngredient && <p><strong>{t("diseaseDetection.activeIngredient")}:</strong> {treatment.activeIngredient}</p>}
+                        {treatment.safetyPrecautions?.length > 0 && (
+                          <div className="safety-warning">
+                            <strong>{t("diseaseDetection.safetyPrecautions")}</strong>
+                            <ul>
+                              {treatment.safetyPrecautions.map((precaution, idx) => <li key={idx}>{precaution}</li>)}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {result.prediction !== 'healthy' && (
+                <div className="ai-warning-box">
+                  <strong>⚠️ {t("diseaseDetection.important", "Important")}</strong>
+                  <p>{t("diseaseDetection.aiWarning", "This is an AI-assisted screening result. Confirm serious cases with a local agricultural expert.")}</p>
+                </div>
+              )}
+            </>
+          )}
+          
           <div className="action-section">
             <button className="btn-secondary" onClick={handleReset}>{t("diseaseDetection.analyzeAnotherBtn")}</button>
           </div>

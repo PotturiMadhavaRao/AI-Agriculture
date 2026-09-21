@@ -26,40 +26,58 @@ function DiseaseRisk() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const fetchWeatherByCoords = async (latitude, longitude) => {
+    try {
+      const res = await fetch(`${API_URL}/api/weather?lat=${latitude}&lon=${longitude}`);
+      const data = await res.json();
+      if (data.success && data.current) {
+        setFormData((prev) => ({
+          ...prev,
+          temperature: data.current.temperature.toString(),
+          humidity: data.current.humidity.toString(),
+          rainfall: data.current.rainfall.toString()
+        }));
+      } else {
+        alert("Failed to fetch weather data for autofill.");
+      }
+    } catch (err) {
+      alert("Error fetching weather data.");
+    } finally {
+      setFetchingWeather(false);
+    }
+  };
+
+  const fallbackToIpLocation = async () => {
+    try {
+      const ipRes = await fetch("https://ipapi.co/json/");
+      const ipData = await ipRes.json();
+      if (ipData && ipData.latitude && ipData.longitude) {
+        await fetchWeatherByCoords(ipData.latitude, ipData.longitude);
+      } else {
+        alert("Location access denied or failed. Please enter weather data manually.");
+        setFetchingWeather(false);
+      }
+    } catch (error) {
+      alert("Location access denied or failed. Please enter weather data manually.");
+      setFetchingWeather(false);
+    }
+  };
+
   const handleAutofillWeather = () => {
     setFetchingWeather(true);
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          try {
-            const { latitude, longitude } = position.coords;
-            const res = await fetch(`${API_URL}/api/weather?lat=${latitude}&lon=${longitude}`);
-            const data = await res.json();
-            if (data.success && data.current) {
-              setFormData((prev) => ({
-                ...prev,
-                temperature: data.current.temperature.toString(),
-                humidity: data.current.humidity.toString(),
-                rainfall: data.current.rainfall.toString()
-              }));
-            } else {
-              alert("Failed to fetch weather data for autofill.");
-            }
-          } catch (err) {
-            alert("Error fetching weather data.");
-          } finally {
-            setFetchingWeather(false);
-          }
+        (position) => {
+          fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
         },
         (err) => {
-          alert("Location access denied or failed. Please enter weather data manually.");
-          setFetchingWeather(false);
+          // If browser location is denied, fallback to IP location
+          fallbackToIpLocation();
         },
         { timeout: 5000 }
       );
     } else {
-      alert("Geolocation is not supported by your browser.");
-      setFetchingWeather(false);
+      fallbackToIpLocation();
     }
   };
 
