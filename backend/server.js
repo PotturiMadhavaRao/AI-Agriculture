@@ -16,6 +16,7 @@ const cropLifeCycleRoutes = require('./routes/cropLifeCycleRoutes');
 const researchRoutes = require('./routes/researchRoutes');
 const translateRoutes = require('./routes/translateRoutes');
 const aiResearchRoutes = require("./routes/aiResearchRoutes");
+const weatherRoutes = require("./routes/weatherRoutes");
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/crop-life-cycle', cropLifeCycleRoutes);
 app.use('/api/research', researchRoutes);
 app.use('/api/translate', translateRoutes);
 app.use("/api/ai-research", aiResearchRoutes);
+app.use("/api/weather", weatherRoutes);
 
 
 // Home route

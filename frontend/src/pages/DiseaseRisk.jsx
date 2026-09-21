@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
+import { translateDynamicContent, translateArray } from "../services/translationService";
 import "./DiseaseRisk.css";
 
 function DiseaseRisk() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     temperature: "",
     humidity: "",
@@ -14,10 +17,50 @@ function DiseaseRisk() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fetchingWeather, setFetchingWeather] = useState(false);
+
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleAutofillWeather = () => {
+    setFetchingWeather(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          try {
+            const { latitude, longitude } = position.coords;
+            const res = await fetch(`${API_URL}/api/weather?lat=${latitude}&lon=${longitude}`);
+            const data = await res.json();
+            if (data.success && data.current) {
+              setFormData((prev) => ({
+                ...prev,
+                temperature: data.current.temperature.toString(),
+                humidity: data.current.humidity.toString(),
+                rainfall: data.current.rainfall.toString()
+              }));
+            } else {
+              alert("Failed to fetch weather data for autofill.");
+            }
+          } catch (err) {
+            alert("Error fetching weather data.");
+          } finally {
+            setFetchingWeather(false);
+          }
+        },
+        (err) => {
+          alert("Location access denied or failed. Please enter weather data manually.");
+          setFetchingWeather(false);
+        },
+        { timeout: 5000 }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+      setFetchingWeather(false);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -27,7 +70,7 @@ function DiseaseRisk() {
     setResult(null);
 
     try {
-      const response = await fetch("http://localhost:5000/api/disease-risk/predict", {
+      const response = await fetch(`${API_URL}/api/disease-risk/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -40,8 +83,14 @@ function DiseaseRisk() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Disease risk prediction failed");
-      setResult(data.risk);
+      if (!response.ok) throw new Error(data.message || t("diseaseRisk.errorBackend"));
+      
+      const translatedRisk = await translateDynamicContent(data.risk.risk_level);
+      
+      setResult({
+        ...data.risk,
+        risk_level_translated: translatedRisk
+      });
     } catch (error) {
       setError(error.message);
     } finally {
@@ -54,6 +103,7 @@ function DiseaseRisk() {
     setResult(null);
     setError("");
   };
+
 
   const getRiskClass = (risk) => {
     if (risk === "High") return "high";
@@ -101,41 +151,45 @@ function DiseaseRisk() {
   return (
     <div className="page-container">
       <PageHeader 
-        title="Disease Risk" 
-        description="Check the risk level for diseases in your crop based on current weather conditions." 
+        title={t("sidebar.diseaseRisk")} 
+        description={t("diseaseRisk.pageDescription")} 
       />
 
       <div className="content-card">
         <form onSubmit={handleSubmit} className="risk-form">
           <div className="section-header">
             <span className="section-icon">🌦️</span>
-            <h3>Current Farm Conditions</h3>
+            <h3>{t("diseaseRisk.sectionTitle")}</h3>
           </div>
-          <p className="section-desc">Enter the recent weather and crop details to assess the risk of disease outbreak.</p>
+          <p className="section-desc">{t("diseaseRisk.sectionDesc")}</p>
+          
+          <button type="button" className="btn-secondary" onClick={handleAutofillWeather} disabled={fetchingWeather} style={{ marginBottom: "15px" }}>
+            {fetchingWeather ? "Fetching Weather..." : "📍 Autofill with Current Weather"}
+          </button>
 
           <div className="input-grid">
             <div className="input-group">
-              <label>🌡️ Temperature (°C)</label>
+              <label>{t("diseaseRisk.temperature")}</label>
               <input type="number" step="0.1" name="temperature" value={formData.temperature} onChange={handleChange} required />
             </div>
 
             <div className="input-group">
-              <label>💧 Humidity (%)</label>
+              <label>{t("diseaseRisk.humidity")}</label>
               <input type="number" step="0.1" name="humidity" value={formData.humidity} onChange={handleChange} min="0" max="100" required />
             </div>
 
             <div className="input-group">
-              <label>🌧️ Rainfall (mm)</label>
+              <label>{t("diseaseRisk.rainfall")}</label>
               <input type="number" step="0.1" name="rainfall" value={formData.rainfall} onChange={handleChange} min="0" required />
             </div>
 
             <div className="input-group">
-              <label>🍃 Leaf Wetness (hrs)</label>
+              <label>{t("diseaseRisk.leafWetness")}</label>
               <input type="number" step="0.1" name="leaf_wetness" value={formData.leaf_wetness} onChange={handleChange} min="0" required />
             </div>
 
             <div className="input-group">
-              <label>🌱 Crop Age (days)</label>
+              <label>{t("diseaseRisk.cropAge")}</label>
               <input type="number" name="crop_age_days" value={formData.crop_age_days} onChange={handleChange} min="1" required />
             </div>
           </div>
@@ -144,7 +198,7 @@ function DiseaseRisk() {
 
           <div className="form-actions">
             <button type="submit" className="btn-primary btn-large" disabled={loading}>
-              {loading ? "🔄 Analyzing Risk..." : "🔍 Check Risk Level"}
+              {loading ? t("diseaseRisk.analyzingBtn") : t("diseaseRisk.analyzeBtn")}
             </button>
           </div>
         </form>
@@ -152,7 +206,7 @@ function DiseaseRisk() {
 
       {result && (
         <div className="result-container">
-          <h2 className="result-heading">Disease Risk Dashboard</h2>
+          <h2 className="result-heading">{t("diseaseRisk.dashboardTitle")}</h2>
 
           <div className={`risk-dashboard-card ${getRiskClass(result.risk_level)}`}>
             <div className="risk-indicator">
@@ -160,13 +214,13 @@ function DiseaseRisk() {
                 {result.risk_level === "High" ? "🔴" : result.risk_level === "Medium" ? "🟡" : "🟢"}
               </span>
               <div className="risk-level-text">
-                <span className="risk-label">Current Risk Level</span>
-                <h2 className="risk-value">{result.risk_level.toUpperCase()} RISK</h2>
+                <span className="risk-label">{t("diseaseRisk.currentRiskLevel")}</span>
+                <h2 className="risk-value">{result.risk_level_translated.toUpperCase()}</h2>
               </div>
             </div>
             
             <div className="confidence-display">
-              <span className="confidence-label">AI Confidence</span>
+              <span className="confidence-label">{t("diseaseRisk.aiConfidence")}</span>
               <span className="confidence-value">{result.confidence}%</span>
             </div>
           </div>
@@ -188,40 +242,40 @@ function DiseaseRisk() {
           })()}
 
           <div className="analyzed-conditions">
-            <h3>🌦️ Analyzed Factors</h3>
+            <h3>{t("diseaseRisk.analyzedFactors")}</h3>
             <div className="factors-grid">
               <div className="factor-item">
                 <span className="factor-icon">🌡️</span>
                 <div className="factor-info">
-                  <small>Temperature</small>
+                  <small>{t("diseaseRisk.tempText")}</small>
                   <strong>{result.conditions.temperature} °C</strong>
                 </div>
               </div>
               <div className="factor-item">
                 <span className="factor-icon">💧</span>
                 <div className="factor-info">
-                  <small>Humidity</small>
+                  <small>{t("diseaseRisk.humText")}</small>
                   <strong>{result.conditions.humidity} %</strong>
                 </div>
               </div>
               <div className="factor-item">
                 <span className="factor-icon">🌧️</span>
                 <div className="factor-info">
-                  <small>Rainfall</small>
+                  <small>{t("diseaseRisk.rainText")}</small>
                   <strong>{result.conditions.rainfall} mm</strong>
                 </div>
               </div>
               <div className="factor-item">
                 <span className="factor-icon">🍃</span>
                 <div className="factor-info">
-                  <small>Leaf Wetness</small>
+                  <small>{t("diseaseRisk.leafText")}</small>
                   <strong>{result.conditions.leaf_wetness} hrs</strong>
                 </div>
               </div>
               <div className="factor-item">
                 <span className="factor-icon">🌱</span>
                 <div className="factor-info">
-                  <small>Crop Age</small>
+                  <small>{t("diseaseRisk.ageText")}</small>
                   <strong>{result.conditions.crop_age_days} days</strong>
                 </div>
               </div>
@@ -229,7 +283,7 @@ function DiseaseRisk() {
           </div>
 
           <div className="action-section">
-            <button className="btn-secondary" onClick={handleReset}>🔄 Check Another Field</button>
+            <button className="btn-secondary" onClick={handleReset}>{t("diseaseRisk.checkAnotherBtn")}</button>
           </div>
         </div>
       )}

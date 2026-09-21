@@ -2,6 +2,8 @@
 
 const axios = require("axios");
 const Crop = require("../models/Crop");
+const ocrService = require("../services/ocrService");
+const labService = require("../services/labService");
 
 const recommendCrop = async (req, res) => {
     try {
@@ -98,6 +100,37 @@ const recommendCrop = async (req, res) => {
     }
 };
 
+const handleOcrUpload = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No image provided" });
+        }
+        
+        const result = await ocrService.extractSoilData(req.file.buffer);
+        res.json(result);
+    } catch (error) {
+        console.error("OCR Error:", error);
+        res.status(500).json({ success: false, message: "Failed to process Soil Health Card" });
+    }
+};
+
+const findLabs = async (req, res) => {
+    try {
+        const { lat, lon } = req.query;
+        if (!lat || !lon) {
+            return res.status(400).json({ success: false, message: "Latitude and longitude required" });
+        }
+        
+        const result = await labService.findNearbyLabs(lat, lon);
+        res.json(result);
+    } catch (error) {
+        console.error("Lab Search Error:", error);
+        res.status(500).json({ success: false, message: "Failed to find nearby labs" });
+    }
+};
+
 module.exports = {
     recommendCrop,
+    handleOcrUpload,
+    findLabs
 };

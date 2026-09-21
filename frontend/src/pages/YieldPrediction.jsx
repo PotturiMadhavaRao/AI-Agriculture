@@ -1,15 +1,17 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
+import { translateDynamicContent } from "../services/translationService";
 import "./YieldPrediction.css";
 
 function YieldPrediction() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
-    Area: "India",
-    Item: "Wheat",
-    Year: 2013,
-    average_rain_fall_mm_per_year: 800,
-    pesticides_tonnes: 40000,
-    avg_temp: 22,
+    Country: "India",
+    Crop: "Wheat",
+    FarmLandArea: "",
+    Irrigation: "Rainfed",
+    SoilType: "Black Soil"
   });
 
   const [result, setResult] = useState(null);
@@ -35,7 +37,13 @@ function YieldPrediction() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Yield prediction failed");
+      if (!response.ok) throw new Error(data.message || t("common.error"));
+
+      if (data.success && data.prediction) {
+          data.prediction.crop = await translateDynamicContent(data.prediction.crop);
+          data.prediction.country = await translateDynamicContent(data.prediction.country);
+      }
+
       setResult(data);
     } catch (error) {
       console.error("Yield prediction error:", error);
@@ -47,12 +55,11 @@ function YieldPrediction() {
 
   const handleReset = () => {
     setFormData({
-      Area: "India",
-      Item: "Wheat",
-      Year: 2013,
-      average_rain_fall_mm_per_year: 800,
-      pesticides_tonnes: 40000,
-      avg_temp: 22,
+      Country: "India",
+      Crop: "Wheat",
+      FarmLandArea: "",
+      Irrigation: "Rainfed",
+      SoilType: "Black Soil"
     });
     setResult(null);
     setError("");
@@ -61,58 +68,69 @@ function YieldPrediction() {
   return (
     <div className="page-container">
       <PageHeader 
-        title="Yield Prediction" 
-        description="Estimate expected crop yield using agricultural and environmental data." 
+        title={t("sidebar.yieldPrediction")} 
+        description={t("yieldPrediction.pageDescription")} 
       />
 
       <div className="content-card">
         <form onSubmit={handleSubmit} className="yield-form">
           <div className="section-header">
             <span className="section-icon">📈</span>
-            <h3>Farm & Environment Information</h3>
+            <h3>{t("yieldPrediction.sectionTitle")}</h3>
           </div>
-          <p className="section-desc">Enter the details below to get an AI-based estimate of your crop production.</p>
+          <p className="section-desc">{t("yieldPrediction.sectionDesc")}</p>
 
           <div className="input-grid">
             <div className="input-group">
-              <label>🌍 Location / Country</label>
-              <input type="text" name="Area" value={formData.Area} onChange={handleChange} placeholder="e.g. India" required />
+              <label>{t("yieldPrediction.location")}</label>
+              <input type="text" name="Country" value={formData.Country} onChange={handleChange} placeholder="e.g. India" required />
             </div>
 
             <div className="input-group">
-              <label>🌾 Crop</label>
-              <select name="Item" value={formData.Item} onChange={handleChange} required>
+              <label>{t("yieldPrediction.crop")}</label>
+              <select name="Crop" value={formData.Crop} onChange={handleChange} required>
+                <option value="Rice">Rice</option>
                 <option value="Wheat">Wheat</option>
                 <option value="Maize">Maize</option>
-                <option value="Rice, paddy">Rice, paddy</option>
                 <option value="Sorghum">Sorghum</option>
-                <option value="Soybeans">Soybeans</option>
-                <option value="Potatoes">Potatoes</option>
+                <option value="Soybean">Soybean</option>
+                <option value="Potato">Potato</option>
+                <option value="Sweet Potato">Sweet Potato</option>
                 <option value="Cassava">Cassava</option>
-                <option value="Sweet potatoes">Sweet potatoes</option>
-                <option value="Plantains and others">Plantains and others</option>
+                <option value="Plantain">Plantain</option>
                 <option value="Yams">Yams</option>
               </select>
             </div>
 
             <div className="input-group">
-              <label>📅 Year (1990-2013 dataset)</label>
-              <input type="number" name="Year" value={formData.Year} onChange={handleChange} min="1990" max="2013" required />
+              <label>Farm Land Area (hectares)</label>
+              <input type="number" name="FarmLandArea" value={formData.FarmLandArea} onChange={handleChange} min="0.01" step="0.01" placeholder="e.g. 2.5" required />
             </div>
 
             <div className="input-group">
-              <label>🌧️ Average Rainfall (mm)</label>
-              <input type="number" step="0.1" name="average_rain_fall_mm_per_year" value={formData.average_rain_fall_mm_per_year} onChange={handleChange} required />
+              <label>Irrigation</label>
+              <select name="Irrigation" value={formData.Irrigation} onChange={handleChange}>
+                <option value="Rainfed">Rainfed</option>
+                <option value="Drip Irrigation">Drip Irrigation</option>
+                <option value="Sprinkler Irrigation">Sprinkler Irrigation</option>
+                <option value="Canal Irrigation">Canal Irrigation</option>
+                <option value="Borewell">Borewell</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
 
             <div className="input-group">
-              <label>🌡️ Average Temp (°C)</label>
-              <input type="number" step="0.1" name="avg_temp" value={formData.avg_temp} onChange={handleChange} required />
-            </div>
-
-            <div className="input-group">
-              <label>🧪 Pesticide Usage (tonnes)</label>
-              <input type="number" step="0.1" name="pesticides_tonnes" value={formData.pesticides_tonnes} onChange={handleChange} required />
+              <label>Soil Type</label>
+              <select name="SoilType" value={formData.SoilType} onChange={handleChange}>
+                <option value="Black Soil">Black Soil</option>
+                <option value="Red Soil">Red Soil</option>
+                <option value="Alluvial Soil">Alluvial Soil</option>
+                <option value="Loamy Soil">Loamy Soil</option>
+                <option value="Sandy Soil">Sandy Soil</option>
+                <option value="Clay Soil">Clay Soil</option>
+                <option value="Other">Other</option>
+                <option value="Unknown / Not sure">Unknown / Not sure</option>
+              </select>
             </div>
           </div>
 
@@ -120,34 +138,41 @@ function YieldPrediction() {
 
           <div className="form-actions">
             <button type="submit" className="btn-primary btn-large" disabled={loading}>
-              {loading ? "🔄 Predicting..." : "🔮 Predict Yield"}
+              {loading ? t("yieldPrediction.predictingBtn") : t("yieldPrediction.predictBtn")}
             </button>
           </div>
         </form>
       </div>
 
-      {result && result.prediction && (
+      {result && result.success && (
         <div className="result-container">
-          <h2 className="result-heading">Estimated Yield Result</h2>
+          <h2 className="result-heading">{t("yieldPrediction.resultHeading")}</h2>
           
           <div className="primary-yield-card">
-            <span className="yield-badge">AI Estimate</span>
+            <span className="yield-badge">{t("yieldPrediction.aiEstimate")}</span>
             <div className="yield-value-group">
-              <h2 className="yield-number">{result.prediction.yield_tonnes_per_ha}</h2>
+              <h2 className="yield-number">{result.predicted_yield_tonnes_per_ha}</h2>
               <span className="yield-unit">tonnes / hectare</span>
             </div>
             <p className="yield-summary">
-              Estimated production of <strong>{result.prediction.crop}</strong> in <strong>{result.prediction.area}</strong> for the year {result.prediction.year}.
+              Estimated yield of <strong>{result.crop}</strong> in <strong>{result.country}</strong>.
             </p>
+            
+            {result.estimated_total_production_tonnes && (
+              <div className="total-production-box" style={{ marginTop: '20px', padding: '15px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '10px' }}>
+                <h3>Estimated Total Production for {result.farm_area_hectares} hectares:</h3>
+                <h2 style={{ fontSize: '2rem', color: '#4CAF50', margin: '10px 0' }}>{result.estimated_total_production_tonnes} tonnes</h2>
+              </div>
+            )}
           </div>
 
           <div className="yield-disclaimer">
-            <h3>💡 What does this mean?</h3>
-            <p>This is an AI-based estimate calculated using historical data. The actual harvest may vary depending on unexpected weather changes, diseases, and local farm practices.</p>
+            <h3>{t("yieldPrediction.disclaimerTitle")}</h3>
+            <p>{t("yieldPrediction.disclaimerText")}</p>
           </div>
 
           <div className="action-section">
-            <button className="btn-secondary" onClick={handleReset}>🔄 Try Another Prediction</button>
+            <button className="btn-secondary" onClick={handleReset}>{t("yieldPrediction.tryAnotherBtn")}</button>
           </div>
         </div>
       )}

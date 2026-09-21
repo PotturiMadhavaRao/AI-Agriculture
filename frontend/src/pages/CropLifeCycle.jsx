@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
+import { translateDynamicContent, translateArray } from "../services/translationService";
 import "./CropLifeCycle.css";
 
 const API_URL = "http://localhost:5000/api/crop-life-cycle";
@@ -15,6 +17,7 @@ const stageIcons = {
 };
 
 function CropLifeCycle() {
+  const { t } = useTranslation();
   const [crops, setCrops] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState("");
   const [crop, setCrop] = useState(null);
@@ -59,7 +62,22 @@ function CropLifeCycle() {
         const data = await response.json();
         if (!data.success) throw new Error(data.message || "Failed to fetch life cycle");
         
-        setCrop(data.crop);
+        let translatedCrop = { ...data.crop };
+        translatedCrop.name = await translateDynamicContent(translatedCrop.name);
+        translatedCrop.growthDuration = await translateDynamicContent(translatedCrop.growthDuration);
+        
+        if (translatedCrop.lifeCycle) {
+            for (let i = 0; i < translatedCrop.lifeCycle.length; i++) {
+                let stage = translatedCrop.lifeCycle[i];
+                stage.stage = await translateDynamicContent(stage.stage);
+                stage.duration = await translateDynamicContent(stage.duration);
+                stage.description = await translateDynamicContent(stage.description);
+                if (stage.farmerActions) stage.farmerActions = await translateArray(stage.farmerActions);
+                if (stage.monitoring) stage.monitoring = await translateArray(stage.monitoring);
+            }
+        }
+        
+        setCrop(translatedCrop);
       } catch (err) {
         console.error("Life cycle fetch error:", err);
         setError("Unable to load the selected crop life cycle.");
@@ -80,24 +98,24 @@ function CropLifeCycle() {
   return (
     <div className="page-container">
       <PageHeader 
-        title="Crop Life Cycle" 
-        description="Learn crop growth stages and important farming activities from seed to harvest." 
+        title={t("sidebar.cropLifeCycle")} 
+        description={t("cropLifeCycle.pageDescription")} 
       />
 
       <div className="content-card selector-card">
         <div className="selector-content">
           <div className="selector-icon">🌱</div>
           <div className="selector-text">
-            <h3>Select a Crop to View its Life Cycle</h3>
-            <p>Choose from the available crops in our database.</p>
+            <h3>{t("cropLifeCycle.selectTitle")}</h3>
+            <p>{t("cropLifeCycle.selectDesc")}</p>
           </div>
         </div>
 
         <div className="selector-dropdown">
           {loadingCrops ? (
-            <p className="loading-text">Loading crops...</p>
+            <p className="loading-text">{t("cropLifeCycle.loadingCrops")}</p>
           ) : crops.length === 0 ? (
-            <p>No crops available.</p>
+            <p>{t("cropLifeCycle.noCrops")}</p>
           ) : (
             <select
               value={selectedCrop}
@@ -115,7 +133,7 @@ function CropLifeCycle() {
       </div>
 
       {error && <div className="error-alert">❌ {error}</div>}
-      {loadingLifeCycle && <div className="loading-alert">🔄 Loading life cycle data...</div>}
+      {loadingLifeCycle && <div className="loading-alert">{t("cropLifeCycle.loadingLifecycle")}</div>}
 
       {crop && !loadingLifeCycle && (
         <div className="lifecycle-container">
@@ -123,7 +141,7 @@ function CropLifeCycle() {
             <h2 className="crop-title">{crop.name}</h2>
             <div className="crop-meta">
               <span className="meta-badge">🧬 {crop.scientificName}</span>
-              <span className="meta-badge">⏱️ Duration: {crop.growthDuration}</span>
+              <span className="meta-badge">{t("cropLifeCycle.duration")}: {crop.growthDuration}</span>
             </div>
           </div>
 
@@ -137,7 +155,7 @@ function CropLifeCycle() {
                 
                 <div className="stage-content">
                   <div className="stage-header">
-                    <span className="stage-number">Stage {index + 1}</span>
+                    <span className="stage-number">{t("cropLifeCycle.stage")} {index + 1}</span>
                     <h3 className="stage-name">{stage.stage}</h3>
                   </div>
                   
@@ -151,7 +169,7 @@ function CropLifeCycle() {
                   <div className="stage-details-grid">
                     {stage.farmerActions?.length > 0 && (
                       <div className="detail-box actions-box">
-                        <h4>🚜 Important Care Tips</h4>
+                        <h4>{t("cropLifeCycle.careTips")}</h4>
                         <ul>
                           {stage.farmerActions.map((action, idx) => (
                             <li key={idx}>{action}</li>
@@ -162,7 +180,7 @@ function CropLifeCycle() {
                     
                     {stage.monitoring?.length > 0 && (
                       <div className="detail-box monitor-box">
-                        <h4>🔍 What to Monitor</h4>
+                        <h4>{t("cropLifeCycle.monitor")}</h4>
                         <ul>
                           {stage.monitoring.map((item, idx) => (
                             <li key={idx}>{item}</li>
@@ -179,15 +197,15 @@ function CropLifeCycle() {
           <div className="general-care-card">
             <div className="care-icon">🌾</div>
             <div className="care-content">
-              <h3>General Farming Advice</h3>
+              <h3>{t("cropLifeCycle.generalAdviceTitle")}</h3>
               <ul className="care-list">
-                <li>Monitor soil moisture regularly and provide appropriate irrigation.</li>
-                <li>Check plants frequently for early signs of pests and diseases.</li>
-                <li>Maintain proper soil nutrition based on periodic soil testing.</li>
-                <li>Keep the field clear of weeds that compete for nutrients.</li>
+                <li>{t("cropLifeCycle.advice1")}</li>
+                <li>{t("cropLifeCycle.advice2")}</li>
+                <li>{t("cropLifeCycle.advice3")}</li>
+                <li>{t("cropLifeCycle.advice4")}</li>
               </ul>
               <p className="care-disclaimer">
-                <strong>Note:</strong> Growth duration and specific stages may vary based on the local climate, soil type, and farming practices.
+                <strong>{t("cropLifeCycle.disclaimer")}</strong> {t("cropLifeCycle.disclaimerText")}
               </p>
             </div>
           </div>

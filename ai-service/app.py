@@ -64,9 +64,14 @@ YIELD_MODEL_PATH = "models/yield_prediction_model.pkl"
 
 yield_model_data = joblib.load(YIELD_MODEL_PATH)
 
-yield_model = yield_model_data["model"]
-yield_features = yield_model_data["features"]
-yield_target = yield_model_data["target"]
+# Check if model is a pipeline (new model) or a dict with components (old model)
+if isinstance(yield_model_data, dict) and "model" in yield_model_data:
+    yield_model = yield_model_data["model"]
+    yield_features = yield_model_data.get("features", ['Country', 'Crop', 'Year'])
+else:
+    # New Pipeline model
+    yield_model = yield_model_data
+    yield_features = ['Country', 'Crop', 'Year']
 
 print("Yield prediction model loaded successfully")
 
@@ -396,23 +401,9 @@ async def predict_yield(data: dict):
         # 1. Get input values
         # --------------------------------------
 
-        Area = data["Area"]
-        Item = data["Item"]
-
-        Year = int(data["Year"])
-
-        average_rain_fall_mm_per_year = float(
-            data["average_rain_fall_mm_per_year"]
-        )
-
-        pesticides_tonnes = float(
-            data["pesticides_tonnes"]
-        )
-
-        avg_temp = float(
-            data["avg_temp"]
-        )
-
+        Country = data.get("Country", data.get("country", data.get("Area")))
+        Crop = data.get("Crop", data.get("crop", data.get("Item")))
+        Year = int(data.get("Year", data.get("year")))
 
         # --------------------------------------
         # 2. Create input DataFrame
@@ -420,14 +411,11 @@ async def predict_yield(data: dict):
 
         input_data = pd.DataFrame(
             [[
-                Area,
-                Item,
-                Year,
-                average_rain_fall_mm_per_year,
-                pesticides_tonnes,
-                avg_temp
+                Country,
+                Crop,
+                Year
             ]],
-            columns=yield_features
+            columns=['Country', 'Crop', 'Year']
         )
 
 
@@ -459,11 +447,11 @@ async def predict_yield(data: dict):
             "success": True,
 
             "prediction": {
-                "area": Area,
-                "crop": Item,
+                "country": Country,
+                "crop": Crop,
                 "year": Year,
 
-                "yield_hg_per_ha": round(
+                "yield_kg_per_ha": round(
                     predicted_yield_hg_ha,
                     2
                 ),

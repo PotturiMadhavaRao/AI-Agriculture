@@ -31,17 +31,12 @@ function Header({ toggleSidebar }) {
                 <button className="menu-toggle" onClick={toggleSidebar}>
                     ☰
                 </button>
-                <h2 className="page-title">{pageTitle}</h2>
             </div>
             
             <div className="header-right">
                 <LanguageSelector />
 
-                <div className="notification-icon">
-                    🔔
-                    <span className="badge">2</span>
-                </div>
-                
+
                 <div className="user-profile">
                     <div className="avatar">👨‍🌾</div>
                     <div className="user-info">

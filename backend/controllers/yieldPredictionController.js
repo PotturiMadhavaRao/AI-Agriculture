@@ -7,12 +7,11 @@ const predictYield = async (req, res) => {
         // ==========================================
 
         const {
-            Area,
-            Item,
-            Year,
-            average_rain_fall_mm_per_year,
-            pesticides_tonnes,
-            avg_temp,
+            Country,
+            Crop,
+            FarmLandArea,
+            Irrigation,
+            SoilType
         } = req.body;
 
 
@@ -21,16 +20,13 @@ const predictYield = async (req, res) => {
         // ==========================================
 
         if (
-            !Area ||
-            !Item ||
-            Year === undefined ||
-            average_rain_fall_mm_per_year === undefined ||
-            pesticides_tonnes === undefined ||
-            avg_temp === undefined
+            !Country ||
+            !Crop ||
+            !FarmLandArea
         ) {
             return res.status(400).json({
                 success: false,
-                message: "All yield prediction fields are required",
+                message: "Country, Crop, and Farm Land Area fields are required",
             });
         }
 
@@ -42,18 +38,9 @@ const predictYield = async (req, res) => {
         const aiResponse = await axios.post(
             "http://127.0.0.1:8000/predict-yield",
             {
-                Area: Area,
-                Item: Item,
-                Year: Number(Year),
-
-                average_rain_fall_mm_per_year:
-                    Number(average_rain_fall_mm_per_year),
-
-                pesticides_tonnes:
-                    Number(pesticides_tonnes),
-
-                avg_temp:
-                    Number(avg_temp),
+                Country: Country,
+                Crop: Crop,
+                Year: 2024
             }
         );
 
@@ -62,13 +49,16 @@ const predictYield = async (req, res) => {
         // 4. Get AI prediction
         // ==========================================
 
-        const prediction = aiResponse.data;
+        const prediction = aiResponse.data.prediction;
 
         console.log(
             "Yield Prediction:",
             prediction
         );
 
+        // Calculate total production
+        const areaHa = parseFloat(FarmLandArea);
+        const totalProduction = (prediction.yield_tonnes_per_ha * areaHa).toFixed(2);
 
         // ==========================================
         // 5. Send response to React
@@ -76,8 +66,12 @@ const predictYield = async (req, res) => {
 
         res.json({
             success: true,
-
-            prediction: prediction.prediction,
+            country: prediction.country,
+            crop: prediction.crop,
+            predicted_yield_kg_per_ha: prediction.yield_kg_per_ha,
+            predicted_yield_tonnes_per_ha: prediction.yield_tonnes_per_ha,
+            farm_area_hectares: areaHa,
+            estimated_total_production_tonnes: Number(totalProduction)
         });
 
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import FeatureCard from '../components/FeatureCard';
 import WeatherCard from '../components/WeatherCard';
@@ -8,6 +8,24 @@ import './Dashboard.css';
 
 function Dashboard() {
     const { t } = useTranslation();
+    const [coords, setCoords] = useState(null);
+
+    useEffect(() => {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setCoords({
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude
+                    });
+                },
+                (err) => {
+                    console.log("Geolocation denied or failed in Dashboard.", err);
+                },
+                { timeout: 5000 }
+            );
+        }
+    }, []);
 
     return (
         <div className="dashboard-container">
@@ -15,18 +33,25 @@ function Dashboard() {
             <div className="hero-banner">
                 <div className="hero-content">
                     <span className="hero-subtitle">🌱 SMART AGRICULTURE PLATFORM</span>
-                    <h1 className="hero-title">{t("dashboard.welcomeTitle")}</h1>
+                    <h1 className="hero-title">Welcome to <span className="text-green">AgriAI</span></h1>
                     <p className="hero-description">
-                        {t("dashboard.welcomeDesc")}
+                        Your smart farming assistant for healthier crops, better decisions and higher yields.
                     </p>
                     <div className="hero-actions">
-                        <button className="btn-primary" onClick={() => window.location.href = '/disease-detection'}>🌿 {t("sidebar.diseaseDetection")}</button>
-                        <button className="btn-secondary" onClick={() => window.location.href = '/crop-recommendation'}>🌾 {t("sidebar.cropRecommendation")}</button>
+                        <button className="btn-primary" onClick={() => window.location.href = '/disease-detection'}>
+                            🔍 Disease Detection →
+                        </button>
+                        <button className="btn-secondary" onClick={() => window.location.href = '/crop-recommendation'}>
+                            🌱 Crop Recommendation →
+                        </button>
                     </div>
                 </div>
-                <div className="hero-image">
-                    {/* Abstract crop icon or image representation */}
-                    <div className="abstract-crop">🌾</div>
+                <div className="hero-visuals">
+                    <div className="positive-badge">
+                        <span>Better Farming</span>
+                        <span>Brighter Future</span>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=400&q=80" alt="Farmer in field" className="hero-farmer-img" />
                 </div>
             </div>
 
@@ -43,12 +68,14 @@ function Dashboard() {
                             title={t("sidebar.diseaseDetection")} 
                             description={t("dashboard.features.diseaseDetection")} 
                             link="/disease-detection" 
+                            type="disease"
                         />
                         <FeatureCard 
                             icon="🌾" 
                             title={t("sidebar.cropRecommendation")} 
                             description={t("dashboard.features.cropRecommendation")} 
                             link="/crop-recommendation" 
+                            type="crop"
                         />
                         <FeatureCard 
                             icon="📈" 
@@ -85,18 +112,17 @@ function Dashboard() {
 
                 {/* Right Column: Widgets */}
                 <div className="dashboard-sidebar">
-                    <WeatherCard />
+                    <WeatherCard coords={coords} />
                     <QuickTips />
                     <LatestUpdates />
                 </div>
             </div>
 
-            {/* Bottom Banner */}
-            <div className="bottom-banner">
-                <div className="bottom-banner-content">
-                    <h2>Better Information → Better Decisions → Higher Yields</h2>
-                    <p>Your AI-powered farming partner</p>
-                </div>
+            {/* Motivational Strip */}
+            <div className="motivational-strip">
+                <span className="strip-icon">🌱</span>
+                <span className="strip-text">Small steps in farming, make a big difference in life!</span>
+                <span className="strip-icon">✨</span>
             </div>
         </div>
     );

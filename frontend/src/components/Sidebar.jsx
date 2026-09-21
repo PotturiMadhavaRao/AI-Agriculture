@@ -7,15 +7,15 @@ function Sidebar({ isOpen, toggleSidebar }) {
     const { t } = useTranslation();
 
     const navItems = [
-        { path: '/', label: t("sidebar.home"), icon: '🏠' },
-        { path: '/disease-detection', label: t("sidebar.diseaseDetection"), icon: '🔍' },
-        { path: '/crop-recommendation', label: t("sidebar.cropRecommendation"), icon: '🌱' },
-        { path: '/yield-prediction', label: t("sidebar.yieldPrediction"), icon: '📊' },
-        { path: '/disease-risk', label: t("sidebar.diseaseRisk"), icon: '⚠️' },
-        { path: '/crop-life-cycle', label: t("sidebar.cropLifeCycle"), icon: '🔄' },
-        { path: '/research', label: t("sidebar.researchAssistant"), icon: '🤖' },
-        { path: '/weather', label: t("sidebar.weatherAdvisory"), icon: '⛅' },
-        { path: '/help', label: t("sidebar.helpSupport"), icon: '❓' },
+        { id: 'home', path: '/', label: t("sidebar.home"), icon: '🏠' },
+        { id: 'disease-detect', path: '/disease-detection', label: t("sidebar.diseaseDetection"), icon: '🔍' },
+        { id: 'crop-rec', path: '/crop-recommendation', label: t("sidebar.cropRecommendation"), icon: '🌱' },
+        { id: 'yield-pred', path: '/yield-prediction', label: t("sidebar.yieldPrediction"), icon: '📊' },
+        { id: 'disease-risk', path: '/disease-risk', label: t("sidebar.diseaseRisk"), icon: '⚠️' },
+        { id: 'crop-life', path: '/crop-life-cycle', label: t("sidebar.cropLifeCycle"), icon: '🔄' },
+        { id: 'research', path: '/research', label: t("sidebar.researchAssistant"), icon: '🤖' },
+        { id: 'weather', path: '/weather', label: t("sidebar.weatherAdvisory"), icon: '⛅' },
+        { id: 'help', path: '/help', label: t("sidebar.helpSupport"), icon: '❓' },
     ];
 
     return (
@@ -23,7 +23,10 @@ function Sidebar({ isOpen, toggleSidebar }) {
             <div className="sidebar-header">
                 <div className="logo-container">
                     <span className="logo-icon">🌱</span>
-                    <span className="logo-text">AgriAI</span>
+                    <div className="logo-text-group">
+                        <span className="logo-text">AgriAI</span>
+                        <span className="logo-subtitle">Healthy Crops • Prosperous Farmers</span>
+                    </div>
                 </div>
                 <button className="close-btn" onClick={toggleSidebar}>✖</button>
             </div>
@@ -32,7 +35,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 {navItems.map((item, index) => (
                     <NavLink 
                         to={item.path} 
-                        className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                        className={({ isActive }) => `nav-item nav-${item.id} ${isActive ? 'active' : ''}`}
                         key={index}
                         onClick={toggleSidebar}
                     >
@@ -44,7 +47,10 @@ function Sidebar({ isOpen, toggleSidebar }) {
 
             <div className="sidebar-footer">
                 <div className="support-card">
+                    <div className="support-avatar">👨‍🌾</div>
                     <p className="support-title">{t("sidebar.farmerSupport")}</p>
+                    <p className="support-phone">📞 1800-180-1551</p>
+                    <p className="support-subtitle">Toll Free | 24x7</p>
                 </div>
             </div>
         </aside>

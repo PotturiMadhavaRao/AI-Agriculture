@@ -31,10 +31,23 @@
     font-size: 24px;
 }
 
+.logo-text-group {
+    display: flex;
+    flex-direction: column;
+}
+
 .logo-text {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--color-primary);
+    line-height: 1.1;
+}
+
+.logo-subtitle {
+    font-size: 9px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .close-btn {
@@ -60,22 +73,67 @@
     align-items: center;
     gap: 15px;
     padding: 12px 15px;
-    border-radius: 10px;
-    color: var(--color-text-muted);
+    border-radius: 12px;
+    color: var(--color-text-main);
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
     font-size: 15px;
+    margin-bottom: 2px;
 }
 
 .nav-item:hover {
-    background-color: var(--color-primary-light);
+    background-color: var(--color-bg-light-green);
     color: var(--color-primary);
+    transform: translateX(4px);
 }
 
 .nav-item.active {
-    background-color: var(--color-primary-light);
-    color: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+    color: var(--color-white);
     font-weight: 600;
+    box-shadow: 0 4px 10px rgba(34, 164, 71, 0.2);
+}
+
+/* Functional Color Mapping for Sidebar Active States */
+.nav-item.nav-disease-detect.active {
+    background: linear-gradient(135deg, #58C93A, #22A447); /* Green */
+    box-shadow: 0 4px 10px rgba(34, 164, 71, 0.25);
+}
+
+.nav-item.nav-crop-rec.active {
+    background: linear-gradient(135deg, #FF9F1C, #22A447); /* Orange + Green */
+    box-shadow: 0 4px 10px rgba(255, 159, 28, 0.25);
+}
+
+.nav-item.nav-yield-pred.active {
+    background: linear-gradient(135deg, #2196F3, #22A447); /* Blue + Green */
+    box-shadow: 0 4px 10px rgba(33, 150, 243, 0.25);
+}
+
+.nav-item.nav-disease-risk.active {
+    background: linear-gradient(135deg, #FF9F1C, #FF4F81); /* Orange/Red */
+    box-shadow: 0 4px 10px rgba(255, 79, 129, 0.25);
+}
+
+.nav-item.nav-crop-life.active {
+    background: linear-gradient(135deg, #20C4D9, #1a9ba8); /* Teal */
+    box-shadow: 0 4px 10px rgba(32, 196, 217, 0.25);
+}
+
+.nav-item.nav-research.active {
+    background: linear-gradient(135deg, #9B7EDE, #7a5ec7); /* Purple */
+    box-shadow: 0 4px 10px rgba(155, 126, 222, 0.25);
+}
+
+.nav-item.nav-weather.active {
+    background: linear-gradient(135deg, #64B5F6, #2196F3); /* Sky Blue/Cyan */
+    box-shadow: 0 4px 10px rgba(33, 150, 243, 0.25);
+}
+
+.nav-item.nav-help.active {
+    background: linear-gradient(135deg, #A8E63D, #FFD23F); /* Friendly Green/Yellow */
+    box-shadow: 0 4px 10px rgba(255, 210, 63, 0.25);
+    color: #17324D; /* Maintain contrast for lighter yellow/green */
 }
 
 .nav-item.disabled {
@@ -86,12 +144,18 @@
 .nav-item.disabled:hover {
     background-color: transparent;
     color: var(--color-text-muted);
+    transform: none;
+}
+
+.nav-item:hover .nav-icon {
+    transform: scale(1.15) rotate(-5deg);
 }
 
 .nav-icon {
     font-size: 20px;
     width: 24px;
     text-align: center;
+    transition: transform 0.3s ease;
 }
 
 .sidebar-footer {
@@ -100,41 +164,36 @@
 }
 
 .support-card {
-    background-color: #f0f7f0;
+    background-color: var(--color-bg-mint);
     padding: 15px;
-    border-radius: 12px;
+    border-radius: 16px;
     text-align: center;
+    border: 1px solid rgba(88, 201, 58, 0.3);
+}
+
+.support-avatar {
+    font-size: 36px;
+    margin-bottom: 8px;
 }
 
 .support-title {
     color: var(--color-primary);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
+    margin-bottom: 6px;
+}
+
+.support-phone {
+    font-weight: 700;
+    color: var(--color-text-main);
+    font-size: 15px;
     margin-bottom: 2px;
 }
 
 .support-subtitle {
     color: var(--color-text-muted);
     font-size: 12px;
-    margin-bottom: 12px;
-}
-
-.support-btn {
-    background-color: white;
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.2s;
-}
-
-.support-btn:hover {
-    background-color: var(--color-primary);
-    color: white;
+    margin-bottom: 0;
 }
 
 /* Responsive */

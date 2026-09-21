@@ -1,6 +1,22 @@
 # Node
-node_modules/
-npm-debug.log*
+/node_modules
+/.pnp
+.pnp.js
+
+# ML Models (Do not upload large models)
+*.pkl
+*.keras
+*.h5
+*.joblib
+*.pt
+*.pth
+
+# Virtual environments
+venv/
+__pycache__/
+
+# Environment Variables
+.envm-debug.log*
 
 # Python
 venv/

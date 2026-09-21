@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
+import { translateDynamicContent, translateArray } from "../services/translationService";
 import "./DiseaseDetection.css";
 
 function DiseaseDetection() {
+  const { t } = useTranslation();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [result, setResult] = useState(null);
@@ -14,7 +17,7 @@ function DiseaseDetection() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file.");
+      setError(t("diseaseDetection.errorImage"));
       return;
     }
 
@@ -26,7 +29,7 @@ function DiseaseDetection() {
 
   const handlePredict = async () => {
     if (!selectedFile) {
-        setError("Please select a crop image first.");
+        setError(t("diseaseDetection.errorSelect"));
         return;
     }
 
@@ -58,10 +61,27 @@ function DiseaseDetection() {
 
             if (diseaseResponse.ok) {
                 const diseaseData = await diseaseResponse.json();
+
+                // Dynamically translate the details
+                diseaseData.disease = await translateDynamicContent(diseaseData.disease);
+                diseaseData.crop = await translateDynamicContent(diseaseData.crop);
+                diseaseData.cause = await translateDynamicContent(diseaseData.cause);
+
+                if (diseaseData.symptoms) diseaseData.symptoms = await translateArray(diseaseData.symptoms);
+                if (diseaseData.prevention) diseaseData.prevention = await translateArray(diseaseData.prevention);
+                
+                if (diseaseData.treatments) {
+                    for (let t of diseaseData.treatments) {
+                        t.treatmentType = await translateDynamicContent(t.treatmentType);
+                        t.recommendation = await translateDynamicContent(t.recommendation);
+                        if (t.activeIngredient) t.activeIngredient = await translateDynamicContent(t.activeIngredient);
+                        if (t.safetyPrecautions) t.safetyPrecautions = await translateArray(t.safetyPrecautions);
+                    }
+                }
+
                 setResult({
                     ...aiData,
-                    disease: diseaseData.disease,
-                    crop: diseaseData.crop,
+                    disease: diseaseData,
                     treatments: diseaseData.treatments,
                 });
                 return;
@@ -70,7 +90,7 @@ function DiseaseDetection() {
         setResult(aiData);
     } catch (error) {
         console.error("Disease detection error:", error);
-        setError("Unable to analyze the image. Please make sure the backend is running.");
+        setError(t("diseaseDetection.errorBackend"));
     } finally {
         setLoading(false);
     }
@@ -93,14 +113,14 @@ function DiseaseDetection() {
   };
 
   const getResultStatus = () => {
-    return result?.prediction?.disease === "healthy" ? "Healthy" : "Disease Detected";
+    return result?.prediction?.disease === "healthy" ? t("diseaseDetection.healthy") : t("diseaseDetection.diseaseDetected");
   };
 
   return (
     <div className="page-container">
       <PageHeader 
-        title="Disease Detection" 
-        description="Upload a clear image of your crop leaf to identify diseases and get treatment recommendations." 
+        title={t("sidebar.diseaseDetection")} 
+        description={t("diseaseDetection.pageDescription")} 
       />
 
       <div className="content-card">
@@ -108,9 +128,9 @@ function DiseaseDetection() {
           <div className="upload-section">
             <label className="upload-box">
               <div className="upload-icon-large">📸</div>
-              <h3>Upload Crop Image</h3>
-              <p>JPG, JPEG or PNG format</p>
-              <span className="btn-primary">Choose Image</span>
+              <h3>{t("diseaseDetection.uploadTitle")}</h3>
+              <p>{t("diseaseDetection.uploadDesc")}</p>
+              <span className="btn-primary">{t("diseaseDetection.chooseImage")}</span>
               <input type="file" accept="image/*" onChange={handleFileChange} hidden />
             </label>
           </div>
@@ -119,7 +139,7 @@ function DiseaseDetection() {
             <img src={preview} alt="Crop leaf preview" className="image-preview" />
             <div className="preview-actions">
               <p className="file-name">{selectedFile?.name}</p>
-              <button className="btn-secondary" onClick={handleReset}>Change Image</button>
+              <button className="btn-secondary" onClick={handleReset}>{t("diseaseDetection.changeImage")}</button>
             </div>
           </div>
         )}
@@ -129,7 +149,7 @@ function DiseaseDetection() {
         {selectedFile && !result && (
           <div className="action-section">
             <button className="btn-primary btn-large" onClick={handlePredict} disabled={loading}>
-              {loading ? "🔄 Analyzing..." : "🔍 Analyze Disease"}
+              {loading ? t("diseaseDetection.analyzingBtn") : t("diseaseDetection.analyzeBtn")}
             </button>
           </div>
         )}
@@ -137,31 +157,31 @@ function DiseaseDetection() {
 
       {result && (
         <div className="result-container">
-          <h2 className="result-heading">Prediction Result</h2>
+          <h2 className="result-heading">{t("diseaseDetection.resultHeading")}</h2>
           
           <div className={`status-card ${result?.prediction?.disease === 'healthy' ? 'healthy' : 'danger'}`}>
             <div className="status-header">
               <span className="status-icon">{result?.prediction?.disease === 'healthy' ? '✅' : '🦠'}</span>
               <div className="status-info">
-                <span className="status-label">Status</span>
+                <span className="status-label">{t("diseaseDetection.status")}</span>
                 <h3 className="status-value">{getResultStatus()}</h3>
               </div>
             </div>
             <div className="confidence-badge">
-              {result.prediction?.confidence}% Confidence
+              {result.prediction?.confidence}% {t("diseaseDetection.confidence")}
             </div>
           </div>
 
           {result?.prediction?.disease !== 'healthy' && (
             <div className="disease-details-card">
-              <h3 className="detail-title">Detected Condition: {getDiseaseName()}</h3>
-              {result.disease?.cause && <p className="detail-cause"><strong>Cause:</strong> {result.disease.cause}</p>}
+              <h3 className="detail-title">{t("diseaseDetection.detectedCondition")}: {getDiseaseName()}</h3>
+              {result.disease?.cause && <p className="detail-cause"><strong>{t("diseaseDetection.cause")}:</strong> {result.disease.cause}</p>}
             </div>
           )}
 
           {result.disease?.symptoms?.length > 0 && (
             <div className="info-block">
-              <h3>🔎 Symptoms</h3>
+              <h3>{t("diseaseDetection.symptoms")}</h3>
               <ul>
                 {result.disease.symptoms.map((symptom, idx) => <li key={idx}>{symptom}</li>)}
               </ul>
@@ -170,7 +190,7 @@ function DiseaseDetection() {
 
           {result.disease?.prevention?.length > 0 && (
             <div className="info-block">
-              <h3>🛡️ Prevention</h3>
+              <h3>{t("diseaseDetection.prevention")}</h3>
               <ul>
                 {result.disease.prevention.map((item, idx) => <li key={idx}>{item}</li>)}
               </ul>
@@ -179,16 +199,16 @@ function DiseaseDetection() {
 
           {result.treatments?.length > 0 && (
             <div className="info-block">
-              <h3>💊 Management & Treatment</h3>
+              <h3>{t("diseaseDetection.management")}</h3>
               <div className="treatments-grid">
                 {result.treatments.map((treatment) => (
                   <div className="treatment-item" key={treatment.id}>
                     <span className="treatment-badge">{treatment.treatmentType}</span>
                     <p>{treatment.recommendation}</p>
-                    {treatment.activeIngredient && <p><strong>Active Ingredient:</strong> {treatment.activeIngredient}</p>}
+                    {treatment.activeIngredient && <p><strong>{t("diseaseDetection.activeIngredient")}:</strong> {treatment.activeIngredient}</p>}
                     {treatment.safetyPrecautions?.length > 0 && (
                       <div className="safety-warning">
-                        <strong>⚠️ Safety Precautions</strong>
+                        <strong>{t("diseaseDetection.safetyPrecautions")}</strong>
                         <ul>
                           {treatment.safetyPrecautions.map((precaution, idx) => <li key={idx}>{precaution}</li>)}
                         </ul>
@@ -201,7 +221,7 @@ function DiseaseDetection() {
           )}
 
           <div className="action-section">
-            <button className="btn-secondary" onClick={handleReset}>🔄 Analyze Another Image</button>
+            <button className="btn-secondary" onClick={handleReset}>{t("diseaseDetection.analyzeAnotherBtn")}</button>
           </div>
         </div>
       )}

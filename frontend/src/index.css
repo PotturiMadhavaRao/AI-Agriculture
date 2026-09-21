@@ -1,23 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  /* Colors */
-  --color-bg-light: #f9fbf9;
-  --color-bg-sidebar: #ffffff;
-  --color-primary: #3b7d3b;
-  --color-primary-hover: #326b32;
-  --color-primary-light: #edf7ed;
-  --color-text-main: #1f2937;
-  --color-text-muted: #6b7280;
-  --color-border: #e1e8e1;
-  --color-white: #ffffff;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --color-info: #3b82f6;
+  /* Primary Agriculture */
+  --color-primary: #22A447;
+  --color-primary-light: #58C93A;
+  
+  /* Vibrant Accents */
+  --color-sunshine: #FFD23F;
+  --color-harvest: #FF9F1C;
+  --color-info-blue: #2196F3;
+  --color-info-cyan: #20C4D9;
+  --color-ai: #9B7EDE;
+  --color-friendly: #FF4F81;
+
+  /* Backgrounds */
+  --bg-base: #F7FBF6;
+  --bg-cream: #FFF9E8;
+  --bg-mint: #EAF8E8;
+  --bg-sky: #EAF6FF;
+  --color-white: #FFFFFF;
+  
+  /* Fallback and Layout Backgrounds */
+  --color-bg-light: var(--bg-base);
+  --color-bg-sidebar: var(--color-white);
+  
+  /* Text */
+  --color-text-main: #17324D;
+  --color-text-muted: #536056;
+  --color-border: #E1E8E1;
+  
+  /* Status/Feedback (Mapped to new vibrant colors where possible) */
+  --color-warning: var(--color-sunshine);
+  --color-danger: var(--color-harvest);
+  --color-info: var(--color-info-blue);
 
   /* Spacing & Sizes */
   --sidebar-width: 260px;
   --header-height: 70px;
-  --border-radius-card: 14px;
-  --border-radius-btn: 9px;
+  --border-radius-card: 20px;
+  --border-radius-btn: 12px;
 }
 
 * {

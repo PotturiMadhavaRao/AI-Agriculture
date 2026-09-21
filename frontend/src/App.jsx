@@ -11,6 +11,7 @@ import YieldPrediction from "./pages/YieldPrediction";
 import DiseaseRisk from "./pages/DiseaseRisk";
 import CropLifeCycle from "./pages/CropLifeCycle";
 import ResearchAssistant from "./pages/ResearchAssistant";
+import WeatherAdvisory from "./pages/WeatherAdvisory";
 import HelpSupport from "./pages/HelpSupport";
 
 import "./App.css"; // Ensure App layout CSS is loaded
@@ -46,6 +47,7 @@ function App() {
               <Route path="/disease-risk" element={<DiseaseRisk />} />
               <Route path="/crop-life-cycle" element={<CropLifeCycle />} />
               <Route path="/research" element={<ResearchAssistant />} />
+              <Route path="/weather" element={<WeatherAdvisory />} />
               <Route path="/help" element={<HelpSupport />} />
             </Routes>
           </main>

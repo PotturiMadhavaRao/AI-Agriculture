@@ -4,7 +4,7 @@ const OpenAI = require("openai");
 const router = express.Router();
 
 const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+    apiKey: process.env.OPENAI_API_KEY || "dummy-key-to-prevent-startup-crash",
 });
 
 router.post("/ask", async (req, res) => {

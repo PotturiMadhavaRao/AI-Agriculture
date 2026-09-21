@@ -411,3 +411,16 @@ Current project components:
 # 🌾 Project Goal
 
 The goal of AI Agriculture is to provide farmers with an easy-to-use platform that combines agricultural data, machine learning, and disease analysis to support better crop-related decisions.
+
+---
+
+## 🌾 Crop Recommendation ML Dataset
+
+**Dataset Name**: Crop_recommendation.csv  
+**Dataset Location**: `ai-service/dataset/crop_recommendation/Crop_recommendation.csv`  
+**Dataset Type**: CSV  
+**Number of Samples**: 2200  
+**Features**: N (Nitrogen), P (Phosphorus), K (Potassium), temperature, humidity, ph, rainfall  
+**Target**: label (22 unique crop classes)  
+**ML Model**: RandomForestClassifier (crop_recommendation_model.pkl)  
+**Preprocessing**: None (Raw numeric values passed to the classifier)

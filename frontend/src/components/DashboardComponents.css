@@ -9,59 +9,103 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 15px rgba(34, 164, 71, 0.05); /* Soft green shadow */
+    position: relative;
+    overflow: hidden;
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-    border-color: var(--color-primary);
+    box-shadow: 0 10px 30px rgba(34, 164, 71, 0.12);
+    border-color: var(--color-primary-light);
 }
 
 .feature-icon {
     font-size: 32px;
-    margin-bottom: 15px;
-    background-color: var(--color-primary-light);
-    width: 60px;
-    height: 60px;
+    margin-bottom: 20px;
+    background-color: var(--bg-mint);
+    width: 65px;
+    height: 65px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 16px;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(-5deg);
 }
 
 .feature-title {
-    font-size: 18px;
+    font-size: 19px;
     color: var(--color-text-main);
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     font-weight: 700;
 }
 
 .feature-description {
     font-size: 14px;
     color: var(--color-text-muted);
-    line-height: 1.5;
-    margin: 0 0 20px;
+    line-height: 1.6;
+    margin: 0 0 25px;
     flex-grow: 1;
 }
 
 .feature-btn {
-    background: none;
+    background: var(--bg-mint);
     border: none;
     color: var(--color-primary);
-    font-weight: 700;
+    font-weight: 600;
     font-size: 14px;
-    padding: 0;
+    padding: 8px 16px;
+    border-radius: 20px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    transition: opacity 0.2s;
+    transition: all 0.2s ease;
 }
 
 .feature-card:hover .feature-btn {
-    opacity: 0.8;
+    background: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Feature Card Types (Pastel backgrounds applied selectively if needed, else white) */
+.feature-card-disease {
+    border-color: rgba(34, 164, 71, 0.2);
+}
+
+.feature-card-disease .feature-icon {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.feature-card-disease .feature-btn {
+    background-color: var(--bg-mint);
+    color: var(--color-primary);
+}
+.feature-card-disease:hover .feature-btn {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.feature-card-crop {
+    border-color: rgba(255, 159, 28, 0.2);
+}
+
+.feature-card-crop .feature-icon {
+    background-color: var(--color-harvest);
+    color: white;
+}
+
+.feature-card-crop .feature-btn {
+    background-color: var(--bg-cream);
+    color: var(--color-harvest);
+}
+.feature-card-crop:hover .feature-btn {
+    background-color: var(--color-harvest);
+    color: white;
 }
 
 
@@ -75,31 +119,37 @@
 
 /* Weather Card */
 .weather-card {
-    background-color: var(--color-info);
+    background: linear-gradient(135deg, var(--color-info-blue), var(--color-info-cyan));
     color: white;
-    border-radius: var(--border-radius-card);
+    border-radius: 20px;
     padding: 25px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 10px 25px rgba(33, 150, 243, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
 .weather-header {
     margin: 0 0 15px;
     font-size: 18px;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .weather-main {
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .weather-temp {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 }
 
 .weather-icon {
@@ -107,37 +157,41 @@
 }
 
 .temp-value {
-    font-size: 36px;
-    font-weight: 700;
+    font-size: 42px;
+    font-weight: 800;
 }
 
 .weather-desc {
     font-size: 16px;
     opacity: 0.9;
+    font-weight: 500;
 }
 
 .weather-details {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    padding-top: 20px;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 15px;
 }
 
 .weather-detail-item {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    align-items: center;
+    text-align: center;
 }
 
 .detail-label {
     font-size: 12px;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .detail-value {
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 
@@ -145,8 +199,9 @@
 .quick-tips-card {
     background-color: var(--color-white);
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-card);
+    border-radius: 20px;
     padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
 }
 
 .tips-list {
@@ -159,19 +214,26 @@
     display: flex;
     align-items: flex-start;
     gap: 15px;
-    padding: 12px;
-    background-color: var(--color-primary-light);
-    border-radius: 10px;
+    padding: 15px;
+    background-color: var(--color-bg-mint);
+    border-radius: 12px;
+    border-left: 4px solid var(--color-primary);
+    transition: transform 0.2s ease;
+}
+
+.tip-item:hover {
+    transform: translateX(3px);
 }
 
 .tip-icon {
-    font-size: 20px;
+    font-size: 22px;
 }
 
 .tip-text {
     font-size: 14px;
     color: var(--color-text-main);
     line-height: 1.5;
+    font-weight: 500;
 }
 
 
