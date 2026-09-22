@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
 import { translateDynamicContent } from "../services/translationService";
+import { useAgriAI } from "../context/AgriAIContext";
 import "./YieldPrediction.css";
 
 function YieldPrediction() {
   const { t } = useTranslation();
+  const { openChatWithContext } = useAgriAI();
   const [formData, setFormData] = useState({
     Country: "India",
     Crop: "Wheat",
@@ -171,7 +173,14 @@ function YieldPrediction() {
             <p>{t("yieldPrediction.disclaimerText")}</p>
           </div>
 
-          <div className="action-section">
+          <div className="action-section" style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
+            <button className="btn-primary" style={{background: '#2ecc71', borderColor: '#2ecc71'}} onClick={() => openChatWithContext({
+                module: 'yield_prediction',
+                crop: result.crop,
+                predicted_yield_tonnes_per_ha: result.predicted_yield_tonnes_per_ha
+            })}>
+                🌱 How can I improve this yield?
+            </button>
             <button className="btn-secondary" onClick={handleReset}>{t("yieldPrediction.tryAnotherBtn")}</button>
           </div>
         </div>

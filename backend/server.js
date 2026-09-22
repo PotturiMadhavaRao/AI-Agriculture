@@ -13,10 +13,9 @@ const cropRecommendationRoutes = require("./routes/cropRecommendationRoutes");
 const yieldPredictionRoutes = require("./routes/yieldPredictionRoutes");
 const diseaseRiskRoutes = require("./routes/diseaseRiskRoutes");
 const cropLifeCycleRoutes = require('./routes/cropLifeCycleRoutes');
-const researchRoutes = require('./routes/researchRoutes');
 const translateRoutes = require('./routes/translateRoutes');
-const aiResearchRoutes = require("./routes/aiResearchRoutes");
 const weatherRoutes = require("./routes/weatherRoutes");
+const agricultureAIRoutes = require("./routes/agricultureAIRoutes");
 
 const app = express();
 
@@ -39,11 +38,9 @@ app.use("/api/crop-recommendation", cropRecommendationRoutes);
 app.use("/api/yield-prediction", yieldPredictionRoutes);
 app.use("/api/disease-risk", diseaseRiskRoutes);
 app.use('/api/crop-life-cycle', cropLifeCycleRoutes);
-app.use('/api/research', researchRoutes);
 app.use('/api/translate', translateRoutes);
-app.use("/api/ai-research", aiResearchRoutes);
 app.use("/api/weather", weatherRoutes);
-
+app.use("/api/agriculture-ai", agricultureAIRoutes);
 
 // Home route
 app.get("/", (req, res) => {

@@ -4,6 +4,7 @@ import FeatureCard from '../components/FeatureCard';
 import WeatherCard from '../components/WeatherCard';
 import QuickTips from '../components/QuickTips';
 import LatestUpdates from '../components/LatestUpdates';
+import AgroConnectCard from '../components/AgroConnectCard';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -86,26 +87,20 @@ function Dashboard() {
                             link="/yield-prediction" 
                             image="/YieldPrediction.jpeg"
                         />
-                        <FeatureCard 
-                            icon="🤖" 
-                            title={t("sidebar.researchAssistant")} 
-                            description={t("dashboard.features.researchAssistant")} 
-                            link="/research" 
-                            image="/ResearchAssistant.jpeg"
-                        />
+
                         <FeatureCard 
                             icon="⚠️" 
                             title={t("sidebar.diseaseRisk")} 
                             description={t("dashboard.features.diseaseRisk")} 
                             link="/disease-risk" 
-                            image="https://images.unsplash.com/photo-1592982537447-6f2334f55333?auto=format&fit=crop&w=400&q=80"
+                            image="/disease_risk.jpeg"
                         />
                         <FeatureCard 
                             icon="🌱" 
                             title={t("sidebar.cropLifeCycle")} 
                             description={t("dashboard.features.cropLifeCycle")} 
                             link="/crop-life-cycle" 
-                            image="https://images.unsplash.com/photo-1595841696677-6479ff3f62eb?auto=format&fit=crop&w=400&q=80"
+                            image="/crop_cycle.jpeg"
                         />
                         <FeatureCard 
                             icon="⛅" 
@@ -113,6 +108,13 @@ function Dashboard() {
                             description={t("dashboard.features.weatherAdvisory")} 
                             link="/weather" 
                             image="https://images.unsplash.com/photo-1530908295418-a12e326966ba?auto=format&fit=crop&w=400&q=80"
+                        />
+                        <AgroConnectCard 
+                            icon="🤝" 
+                            title={t("sidebar.agroConnect")} 
+                            description={t("dashboard.features.agroConnect")} 
+                            link="https://agro-connect-using-mern.vercel.app/" 
+                            image="/connect_farmer_buyer.jpeg"
                         />
                     </div>
                 </div>

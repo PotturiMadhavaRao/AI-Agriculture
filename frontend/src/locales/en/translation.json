@@ -11,6 +11,7 @@
         "governmentSchemes": "Government Schemes",
         "myFarm": "My Farm",
         "helpSupport": "Help & Support",
+        "agroConnect": "AgroConnect",
         "farmerSupport": "Farmer Support: 1800-180-1551"
     },
     "header": {
@@ -30,7 +31,8 @@
             "cropLifeCycle": "View stages of crop growth and required care.",
             "researchAssistant": "Ask agricultural questions to our AI assistant.",
             "weatherAdvisory": "Get local weather forecasts and farm advisories.",
-            "governmentSchemes": "Find financial support and farming schemes."
+            "governmentSchemes": "Find financial support and farming schemes.",
+            "agroConnect": "Connect with farmers, buyers and agricultural communities."
         }
     },
     "common": {

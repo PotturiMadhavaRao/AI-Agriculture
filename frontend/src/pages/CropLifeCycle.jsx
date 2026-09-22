@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
 import { translateDynamicContent, translateArray } from "../services/translationService";
+import { useAgriAI } from "../context/AgriAIContext";
 import "./CropLifeCycle.css";
 
 const API_URL = "http://localhost:5000/api/crop-life-cycle";
@@ -18,6 +19,7 @@ const stageIcons = {
 
 function CropLifeCycle() {
   const { t } = useTranslation();
+  const { openChatWithContext } = useAgriAI();
   const [crops, setCrops] = useState([]);
   const [selectedCrop, setSelectedCrop] = useState("");
   const [crop, setCrop] = useState(null);
@@ -139,9 +141,15 @@ function CropLifeCycle() {
         <div className="lifecycle-container">
           <div className="lifecycle-header">
             <h2 className="crop-title">{crop.name}</h2>
-            <div className="crop-meta">
+            <div className="crop-meta" style={{display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap'}}>
               <span className="meta-badge">🧬 {crop.scientificName}</span>
               <span className="meta-badge">{t("cropLifeCycle.duration")}: {crop.growthDuration}</span>
+              <button className="btn-primary" style={{background: '#2ecc71', borderColor: '#2ecc71', padding: '5px 15px', fontSize: '14px', height: 'auto'}} onClick={() => openChatWithContext({
+                  module: 'crop_lifecycle',
+                  crop: crop.name
+              })}>
+                  🌱 Ask AgriAI about this crop
+              </button>
             </div>
           </div>
 

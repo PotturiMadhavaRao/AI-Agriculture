@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
 import { translateDynamicContent, translateArray } from "../services/translationService";
+import { useAgriAI } from "../context/AgriAIContext";
 import "./DiseaseRisk.css";
 
 function DiseaseRisk() {
   const { t } = useTranslation();
+  const { openChatWithContext } = useAgriAI();
   const [formData, setFormData] = useState({
     temperature: "",
     humidity: "",
@@ -188,27 +190,27 @@ function DiseaseRisk() {
           <div className="input-grid">
             <div className="input-group">
               <label>{t("diseaseRisk.temperature")}</label>
-              <input type="number" step="0.1" name="temperature" value={formData.temperature} onChange={handleChange} required />
+              <input type="number" step="any" name="temperature" value={formData.temperature} onChange={handleChange} placeholder="e.g. 28.5" required />
             </div>
 
             <div className="input-group">
               <label>{t("diseaseRisk.humidity")}</label>
-              <input type="number" step="0.1" name="humidity" value={formData.humidity} onChange={handleChange} min="0" max="100" required />
+              <input type="number" step="any" name="humidity" value={formData.humidity} onChange={handleChange} min="0" max="100" placeholder="e.g. 82.5" required />
             </div>
 
             <div className="input-group">
               <label>{t("diseaseRisk.rainfall")}</label>
-              <input type="number" step="0.1" name="rainfall" value={formData.rainfall} onChange={handleChange} min="0" required />
+              <input type="number" step="any" name="rainfall" value={formData.rainfall} onChange={handleChange} min="0" placeholder="e.g. 15.2" required />
             </div>
 
             <div className="input-group">
               <label>{t("diseaseRisk.leafWetness")}</label>
-              <input type="number" step="0.1" name="leaf_wetness" value={formData.leaf_wetness} onChange={handleChange} min="0" required />
+              <input type="number" step="any" name="leaf_wetness" value={formData.leaf_wetness} onChange={handleChange} min="0" placeholder="e.g. 4.5" required />
             </div>
 
             <div className="input-group">
               <label>{t("diseaseRisk.cropAge")}</label>
-              <input type="number" name="crop_age_days" value={formData.crop_age_days} onChange={handleChange} min="1" required />
+              <input type="number" name="crop_age_days" value={formData.crop_age_days} onChange={handleChange} min="1" placeholder="e.g. 30" required />
             </div>
           </div>
 
@@ -300,7 +302,13 @@ function DiseaseRisk() {
             </div>
           </div>
 
-          <div className="action-section">
+          <div className="action-section" style={{display: 'flex', gap: '10px', justifyContent: 'center'}}>
+            <button className="btn-primary" style={{background: '#2ecc71', borderColor: '#2ecc71'}} onClick={() => openChatWithContext({
+                module: 'disease_risk',
+                riskLevel: result.risk_level_translated
+            })}>
+                🌱 How can I reduce this risk?
+            </button>
             <button className="btn-secondary" onClick={handleReset}>{t("diseaseRisk.checkAnotherBtn")}</button>
           </div>
         </div>

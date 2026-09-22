@@ -13,8 +13,8 @@ function Sidebar({ isOpen, toggleSidebar }) {
         { id: 'yield-pred', path: '/yield-prediction', label: t("sidebar.yieldPrediction"), icon: '📊' },
         { id: 'disease-risk', path: '/disease-risk', label: t("sidebar.diseaseRisk"), icon: '⚠️' },
         { id: 'crop-life', path: '/crop-life-cycle', label: t("sidebar.cropLifeCycle"), icon: '🔄' },
-        { id: 'research', path: '/research', label: t("sidebar.researchAssistant"), icon: '🤖' },
         { id: 'weather', path: '/weather', label: t("sidebar.weatherAdvisory"), icon: '⛅' },
+        { id: 'agro-connect', path: 'https://agro-connect-using-mern.vercel.app/', label: t("sidebar.agroConnect"), icon: '🤝', external: true },
         { id: 'help', path: '/help', label: t("sidebar.helpSupport"), icon: '❓' },
     ];
 
@@ -32,17 +32,34 @@ function Sidebar({ isOpen, toggleSidebar }) {
             </div>
 
             <nav className="sidebar-nav">
-                {navItems.map((item, index) => (
-                    <NavLink 
-                        to={item.path} 
-                        className={({ isActive }) => `nav-item nav-${item.id} ${isActive ? 'active' : ''}`}
-                        key={index}
-                        onClick={toggleSidebar}
-                    >
-                        <span className="nav-icon">{item.icon}</span>
-                        <span className="nav-label">{item.label}</span>
-                    </NavLink>
-                ))}
+                {navItems.map((item, index) => {
+                    if (item.external) {
+                        return (
+                            <a 
+                                href={item.path} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className={`nav-item nav-${item.id}`}
+                                key={index}
+                                onClick={toggleSidebar}
+                            >
+                                <span className="nav-icon">{item.icon}</span>
+                                <span className="nav-label">{item.label}</span>
+                            </a>
+                        );
+                    }
+                    return (
+                        <NavLink 
+                            to={item.path} 
+                            className={({ isActive }) => `nav-item nav-${item.id} ${isActive ? 'active' : ''}`}
+                            key={index}
+                            onClick={toggleSidebar}
+                        >
+                            <span className="nav-icon">{item.icon}</span>
+                            <span className="nav-label">{item.label}</span>
+                        </NavLink>
+                    );
+                })}
             </nav>
 
             <div className="sidebar-footer">

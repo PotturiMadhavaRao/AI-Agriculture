@@ -10,9 +10,11 @@ import CropRecommendation from "./pages/CropRecommendation";
 import YieldPrediction from "./pages/YieldPrediction";
 import DiseaseRisk from "./pages/DiseaseRisk";
 import CropLifeCycle from "./pages/CropLifeCycle";
-import ResearchAssistant from "./pages/ResearchAssistant";
 import WeatherAdvisory from "./pages/WeatherAdvisory";
 import HelpSupport from "./pages/HelpSupport";
+
+import { AgriAIProvider } from './context/AgriAIContext';
+import AgricultureAIChat from './components/AgriAIChat/AgricultureAIChat';
 
 import "./App.css"; // Ensure App layout CSS is loaded
 
@@ -24,10 +26,11 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
-      <div className="app-container">
-        
-        {/* Mobile Sidebar Overlay */}
+    <AgriAIProvider>
+      <BrowserRouter>
+        <div className="app-container">
+          
+          {/* Mobile Sidebar Overlay */}
         <div 
           className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
           onClick={toggleSidebar}
@@ -46,15 +49,17 @@ function App() {
               <Route path="/yield-prediction" element={<YieldPrediction />} />
               <Route path="/disease-risk" element={<DiseaseRisk />} />
               <Route path="/crop-life-cycle" element={<CropLifeCycle />} />
-              <Route path="/research" element={<ResearchAssistant />} />
               <Route path="/weather" element={<WeatherAdvisory />} />
               <Route path="/help" element={<HelpSupport />} />
             </Routes>
           </main>
         </div>
 
+        <AgricultureAIChat />
+
       </div>
     </BrowserRouter>
+    </AgriAIProvider>
   );
 }
 

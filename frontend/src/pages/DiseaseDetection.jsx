@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
 import { translateDynamicContent, translateArray } from "../services/translationService";
+import { useAgriAI } from "../context/AgriAIContext";
 import "./DiseaseDetection.css";
 
 function DiseaseDetection() {
@@ -11,6 +12,7 @@ function DiseaseDetection() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { openChatWithContext } = useAgriAI();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -289,6 +291,20 @@ function DiseaseDetection() {
           )}
           
           <div className="action-section">
+            {result?.prediction && result.prediction !== 'healthy' && result.status !== "invalid_image" && result.status !== "uncertain" && result.valid_image !== false && (
+              <button 
+                className="btn-primary" 
+                style={{marginRight: '10px', background: '#2ecc71', borderColor: '#2ecc71'}}
+                onClick={() => openChatWithContext({
+                  module: 'disease_detection',
+                  crop: 'Tomato', 
+                  disease: getDiseaseName(),
+                  confidence: result.confidence
+                })}
+              >
+                🌱 Ask AgriAI about this disease
+              </button>
+            )}
             <button className="btn-secondary" onClick={handleReset}>{t("diseaseDetection.analyzeAnotherBtn")}</button>
           </div>
         </div>

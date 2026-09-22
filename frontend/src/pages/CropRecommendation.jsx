@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import PageHeader from "../components/PageHeader";
 import { translateDynamicContent, translateArray } from "../services/translationService";
+import { useAgriAI } from "../context/AgriAIContext";
 import "./CropRecommendation.css";
 
 function CropRecommendation() {
     const { t } = useTranslation();
+    const { openChatWithContext } = useAgriAI();
     
     // UI Modes
     const [mode, setMode] = useState("farmer"); // "farmer" or "advanced"
@@ -385,13 +387,13 @@ function CropRecommendation() {
                             <form onSubmit={handleSubmit} className="crop-form">
                                 <h3>⚙️ Advanced Manual Entry</h3>
                                 <div className="input-grid">
-                                    <div className="input-group"><label>Nitrogen (N)</label><input type="number" name="N" value={formData.N} onChange={handleChange} required /></div>
-                                    <div className="input-group"><label>Phosphorus (P)</label><input type="number" name="P" value={formData.P} onChange={handleChange} required /></div>
-                                    <div className="input-group"><label>Potassium (K)</label><input type="number" name="K" value={formData.K} onChange={handleChange} required /></div>
-                                    <div className="input-group"><label>Soil pH</label><input type="number" step="0.1" name="ph" value={formData.ph} onChange={handleChange} required /></div>
-                                    <div className="input-group"><label>Temperature (°C)</label><input type="number" step="0.1" name="temperature" value={formData.temperature} onChange={handleChange} required /></div>
-                                    <div className="input-group"><label>Humidity (%)</label><input type="number" step="0.1" name="humidity" value={formData.humidity} onChange={handleChange} required /></div>
-                                    <div className="input-group"><label>Rainfall (mm)</label><input type="number" step="0.1" name="rainfall" value={formData.rainfall} onChange={handleChange} required /></div>
+                                    <div className="input-group"><label>Nitrogen (N)</label><input type="number" name="N" value={formData.N} onChange={handleChange} placeholder="e.g. 90" required /></div>
+                                    <div className="input-group"><label>Phosphorus (P)</label><input type="number" name="P" value={formData.P} onChange={handleChange} placeholder="e.g. 42" required /></div>
+                                    <div className="input-group"><label>Potassium (K)</label><input type="number" name="K" value={formData.K} onChange={handleChange} placeholder="e.g. 43" required /></div>
+                                    <div className="input-group"><label>Soil pH</label><input type="number" step="any" name="ph" value={formData.ph} onChange={handleChange} placeholder="e.g. 6.5" required /></div>
+                                    <div className="input-group"><label>Temperature (°C)</label><input type="number" step="any" name="temperature" value={formData.temperature} onChange={handleChange} placeholder="e.g. 25.5" required /></div>
+                                    <div className="input-group"><label>Humidity (%)</label><input type="number" step="any" name="humidity" value={formData.humidity} onChange={handleChange} placeholder="e.g. 82" required /></div>
+                                    <div className="input-group"><label>Rainfall (mm)</label><input type="number" step="any" name="rainfall" value={formData.rainfall} onChange={handleChange} placeholder="e.g. 200.5" required /></div>
                                 </div>
                                 <button type="submit" className="btn-primary btn-large mt-4" disabled={loading}>
                                     {loading ? "Analyzing..." : "Get Recommendation 🌾"}
@@ -444,7 +446,16 @@ function CropRecommendation() {
                             </div>
                         )}
 
-                        <button className="btn-secondary mt-4" onClick={resetForm}>Start Over</button>
+                        <div style={{display: 'flex', gap: '10px', marginTop: '1rem'}}>
+                            <button className="btn-primary" style={{background: '#2ecc71', borderColor: '#2ecc71'}} onClick={() => openChatWithContext({
+                                module: 'crop_recommendation',
+                                recommended_crop: result.recommendation.recommended_crop,
+                                confidence: result.recommendation.confidence
+                            })}>
+                                🌱 Ask AgriAI about this crop
+                            </button>
+                            <button className="btn-secondary" onClick={resetForm}>Start Over</button>
+                        </div>
                     </div>
                 )}
             </div>
