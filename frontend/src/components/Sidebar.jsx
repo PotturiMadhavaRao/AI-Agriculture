@@ -25,7 +25,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                     <span className="logo-icon">🌱</span>
                     <div className="logo-text-group">
                         <span className="logo-text">AgriAI</span>
-                        <span className="logo-subtitle">Healthy Crops • Prosperous Farmers</span>
+                        <span className="logo-subtitle">{t("sidebar.tagline")}</span>
                     </div>
                 </div>
                 <button className="close-btn" onClick={toggleSidebar}>✖</button>
@@ -67,7 +67,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                     <div className="support-avatar">👨‍🌾</div>
                     <p className="support-title">{t("sidebar.farmerSupport")}</p>
                     <p className="support-phone">📞 1800-180-1551</p>
-                    <p className="support-subtitle">Toll Free | 24x7</p>
+                    <p className="support-subtitle">{t("sidebar.tollFree")}</p>
                 </div>
             </div>
         </aside>

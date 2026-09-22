@@ -148,7 +148,7 @@ function CropLifeCycle() {
                   module: 'crop_lifecycle',
                   crop: crop.name
               })}>
-                  🌱 Ask AgriAI about this crop
+                  🌱 {t("cropLifeCycle.askAgriAI")}
               </button>
             </div>
           </div>

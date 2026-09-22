@@ -302,7 +302,7 @@ function DiseaseDetection() {
                   confidence: result.confidence
                 })}
               >
-                🌱 Ask AgriAI about this disease
+                🌱 {t("diseaseDetection.askAgriAI")}
               </button>
             )}
             <button className="btn-secondary" onClick={handleReset}>{t("diseaseDetection.analyzeAnotherBtn")}</button>

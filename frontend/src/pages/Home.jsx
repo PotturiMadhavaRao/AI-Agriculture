@@ -1,6 +1,8 @@
+import { useTranslation } from "react-i18next";
 import "./Home.css";
 
 function Home() {
+  const { t } = useTranslation();
   return (
     <div className="home">
 
@@ -9,26 +11,24 @@ function Home() {
 
         <div className="hero-content">
 
-          <p className="welcome">🌾 Welcome to AgriAI</p>
+          <p className="welcome">🌾 {t("home.welcome")}</p>
 
           <h1>
-            AI-Powered Agricultural
-            <span> Disease Detection</span>
+            {t("home.heroTitle1")}
+            <span> {t("home.heroTitle2")}</span>
           </h1>
 
           <p className="hero-description">
-            Detect crop diseases, understand their causes,
-            predict risks, and get intelligent agricultural
-            recommendations using Artificial Intelligence.
+            {t("home.heroDesc")}
           </p>
 
           <div className="hero-buttons">
             <button className="primary-btn">
-              🔍 Detect Disease
+              🔍 {t("home.detectBtn")}
             </button>
 
             <button className="secondary-btn">
-              🌱 Recommend Crop
+              🌱 {t("home.recommendBtn")}
             </button>
           </div>
 
@@ -41,16 +41,15 @@ function Home() {
       <section className="features">
 
         <div className="section-title">
-          <p>SMART AGRICULTURE</p>
+          <p>{t("home.smartAgriculture")}</p>
 
           <h2>
-            Everything You Need for
-            <span> Better Crop Management</span>
+            {t("home.betterManagement1")}
+            <span> {t("home.betterManagement2")}</span>
           </h2>
 
           <p>
-            One intelligent platform for disease detection,
-            prediction and agricultural decision support.
+            {t("home.platformDesc")}
           </p>
         </div>
 
@@ -59,127 +58,50 @@ function Home() {
 
           {/* Disease Detection */}
           <div className="feature-card">
-
-            <div className="feature-icon">
-              🔬
-            </div>
-
-            <h3>AI Disease Detection</h3>
-
-            <p>
-              Upload a crop or leaf image and use AI
-              to identify possible diseases.
-            </p>
-
-            <button>
-              Detect Disease →
-            </button>
-
+            <div className="feature-icon">🔬</div>
+            <h3>{t("home.features.disease.title")}</h3>
+            <p>{t("home.features.disease.desc")}</p>
+            <button>{t("home.features.disease.btn")} →</button>
           </div>
-
 
           {/* Crop Recommendation */}
           <div className="feature-card">
-
-            <div className="feature-icon">
-              🌱
-            </div>
-
-            <h3>Crop Recommendation</h3>
-
-            <p>
-              Get suitable crop recommendations based
-              on soil, weather and environmental conditions.
-            </p>
-
-            <button>
-              Recommend Crop →
-            </button>
-
+            <div className="feature-icon">🌱</div>
+            <h3>{t("home.features.recommend.title")}</h3>
+            <p>{t("home.features.recommend.desc")}</p>
+            <button>{t("home.features.recommend.btn")} →</button>
           </div>
-
 
           {/* Yield Prediction */}
           <div className="feature-card">
-
-            <div className="feature-icon">
-              📈
-            </div>
-
-            <h3>Yield Prediction</h3>
-
-            <p>
-              Estimate expected crop yield using
-              agricultural and environmental data.
-            </p>
-
-            <button>
-              Predict Yield →
-            </button>
-
+            <div className="feature-icon">📈</div>
+            <h3>{t("home.features.yield.title")}</h3>
+            <p>{t("home.features.yield.desc")}</p>
+            <button>{t("home.features.yield.btn")} →</button>
           </div>
-
 
           {/* Disease Risk */}
           <div className="feature-card">
-
-            <div className="feature-icon">
-              ⚠️
-            </div>
-
-            <h3>Disease Risk Prediction</h3>
-
-            <p>
-              Predict disease risk using weather,
-              crop conditions and historical information.
-            </p>
-
-            <button>
-              Check Risk →
-            </button>
-
+            <div className="feature-icon">⚠️</div>
+            <h3>{t("home.features.risk.title")}</h3>
+            <p>{t("home.features.risk.desc")}</p>
+            <button>{t("home.features.risk.btn")} →</button>
           </div>
-
 
           {/* Crop Lifecycle */}
           <div className="feature-card">
-
-            <div className="feature-icon">
-              🌿
-            </div>
-
-            <h3>Crop Life Cycle</h3>
-
-            <p>
-              Learn about crop growth stages,
-              requirements and common diseases.
-            </p>
-
-            <button>
-              Explore Crops →
-            </button>
-
+            <div className="feature-icon">🌿</div>
+            <h3>{t("home.features.lifecycle.title")}</h3>
+            <p>{t("home.features.lifecycle.desc")}</p>
+            <button>{t("home.features.lifecycle.btn")} →</button>
           </div>
-
 
           {/* Research */}
           <div className="feature-card">
-
-            <div className="feature-icon">
-              📚
-            </div>
-
-            <h3>Agricultural Research</h3>
-
-            <p>
-              Explore agricultural research,
-              disease information and modern farming knowledge.
-            </p>
-
-            <button>
-              Research →
-            </button>
-
+            <div className="feature-icon">📚</div>
+            <h3>{t("home.features.research.title")}</h3>
+            <p>{t("home.features.research.desc")}</p>
+            <button>{t("home.features.research.btn")} →</button>
           </div>
 
         </div>

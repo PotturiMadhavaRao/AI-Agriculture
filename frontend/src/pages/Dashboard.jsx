@@ -33,24 +33,24 @@ function Dashboard() {
             {/* Hero Section */}
             <div className="hero-banner">
                 <div className="hero-content">
-                    <span className="hero-subtitle">🌱 SMART AGRICULTURE PLATFORM</span>
-                    <h1 className="hero-title">Welcome to <span className="text-green">AgriAI</span></h1>
+                    <span className="hero-subtitle">🌱 {t("dashboard.heroSubtitle")}</span>
+                    <h1 className="hero-title">{t("dashboard.welcomeTitle1")} <span className="text-green">AgriAI</span></h1>
                     <p className="hero-description">
-                        Your smart farming assistant for healthier crops, better decisions and higher yields.
+                        {t("dashboard.welcomeDesc")}
                     </p>
                     <div className="hero-actions">
                         <button className="btn-primary" onClick={() => window.location.href = '/disease-detection'}>
-                            🔍 Disease Detection →
+                            🔍 {t("sidebar.diseaseDetection")} →
                         </button>
                         <button className="btn-secondary" onClick={() => window.location.href = '/crop-recommendation'}>
-                            🌱 Crop Recommendation →
+                            🌱 {t("sidebar.cropRecommendation")} →
                         </button>
                     </div>
                 </div>
                 <div className="hero-visuals">
                     <div className="positive-badge">
-                        <span>Better Farming</span>
-                        <span>Brighter Future</span>
+                        <span>{t("dashboard.badgeLine1")}</span>
+                        <span>{t("dashboard.badgeLine2")}</span>
                     </div>
                     <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=400&q=80" alt="Farmer in field" className="hero-farmer-img" />
                 </div>
@@ -61,7 +61,7 @@ function Dashboard() {
                 {/* Left Column: Features */}
                 <div className="dashboard-main">
                     <h2 className="section-title">{t("dashboard.exploreFeatures")}</h2>
-                    <p className="section-subtitle">Use AI-powered tools to understand crop health and make informed agricultural decisions.</p>
+                    <p className="section-subtitle">{t("dashboard.sectionSubtitle")}</p>
                     
                     <div className="features-grid">
                         <FeatureCard 
@@ -130,7 +130,7 @@ function Dashboard() {
             {/* Motivational Strip */}
             <div className="motivational-strip">
                 <span className="strip-icon">🌱</span>
-                <span className="strip-text">Small steps in farming, make a big difference in life!</span>
+                <span className="strip-text">{t("dashboard.motivationalStrip")}</span>
                 <span className="strip-icon">✨</span>
             </div>
         </div>

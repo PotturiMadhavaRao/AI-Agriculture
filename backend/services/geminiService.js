@@ -152,25 +152,121 @@ Do not change or override the original ML prediction.
         // Create Gemini chat
         // ---------------------------------------------------------
 
-        const chat = model.startChat({
-            history: normalizedHistory,
+    let retries = 0;
+    const maxRetries = 2;
+    const baseDelay = 1000; // 1 second
+
+    while (retries <= maxRetries) {
+        try {
+            const chat = model.startChat({
+                history: normalizedHistory,
+            });
+
+            const result = await chat.sendMessage(finalMessage);
+            return result.response.text();
+            
+        } catch (error) {
+            let errorCategory = "server_error";
+            const status = error.status || (error.response ? error.response.status : null);
+            const messageStr = (error.message || "").toLowerCase();
+            const errorCode = error.code || (error.errorDetails && error.errorDetails.length > 0 ? error.errorDetails[0].reason : null);
+
+            // Safe error logging (no sensitive info)
+            console.error("AI Assistant API error:", {
+                status: status,
+                code: errorCode,
+                type: error.name,
+                message: error.message
+            });
+
+            // Classification
+            if (status === 401 || status === 403 || messageStr.includes("auth") || messageStr.includes("key")) {
+                errorCategory = "auth_error";
+            } else if (status === 429 || messageStr.includes("429") || messageStr.includes("quota")) {
+                if (
+                    messageStr.includes("credit_balance_exhausted") || 
+                    messageStr.includes("insufficient_quota") ||
+                    messageStr.includes("organization_usage_limit_exceeded") ||
+                    messageStr.includes("spend_limit_exceeded") ||
+                    messageStr.includes("quota exceeded")
+                ) {
+                    errorCategory = "quota_error";
+                } else {
+                    errorCategory = "rate_limit";
+                }
+            } else if (!status && (messageStr.includes("network") || messageStr.includes("fetch") || error.name === "TypeError")) {
+                errorCategory = "network_error";
+            }
+
+            // Retry logic ONLY for temporary rate limits
+            if (errorCategory === "rate_limit" && retries < maxRetries) {
+                retries++;
+                const delay = baseDelay * Math.pow(2, retries);
+                console.log(`[Rate Limit] Retrying in ${delay}ms... (Attempt ${retries}/${maxRetries})`);
+                await new Promise((resolve) => setTimeout(resolve, delay));
+                continue;
+            }
+
+            // If we've exhausted retries or it's a non-retriable error, throw structured error
+            const err = new Error(error.message);
+            err.category = errorCategory;
+            throw err;
+        }
+        }
+    } catch (outerError) {
+        console.error("Gemini API Outer Error:", outerError);
+        if (outerError.category) {
+            throw outerError;
+        }
+        const err = new Error(outerError.message);
+        err.category = "server_error";
+        throw err;
+    }
+}
+
+async function translateText(text, targetLanguage) {
+    if (!text || !targetLanguage) return text;
+    
+    // Convert target language code to full name for Gemini
+    const languageMap = {
+        'te': 'Telugu',
+        'hi': 'Hindi',
+        'ta': 'Tamil',
+        'kn': 'Kannada',
+        'ml': 'Malayalam',
+        'bn': 'Bengali',
+        'en': 'English'
+    };
+    
+    const languageName = languageMap[targetLanguage] || targetLanguage;
+    
+    const TRANSLATION_INSTRUCTION = `
+You are an expert agricultural translator. Translate the following text into ${languageName}.
+
+CRITICAL RULES:
+1. Provide ONLY the translated text. Do NOT add any language codes (e.g., [TE], [HI]).
+2. Do NOT add explanations, notes, or quotes.
+3. Preserve scientific names (e.g., "Capsicum annuum", "Solanum lycopersicum") exactly as they are without translating them.
+4. Use proper, natural agricultural terminology in the target language. Do not use direct literal translation if a local farming term exists.
+5. Preserve formatting, lists, numbers, and units (e.g., kg/ha, mm, °C).
+6. If the text is a single word (e.g., "Seed"), provide just the translated word (e.g., "విత్తనం").
+`;
+
+    try {
+        const model = genAI.getGenerativeModel({
+            model: process.env.GEMINI_MODEL || "gemini-3.6-flash",
+            systemInstruction: TRANSLATION_INSTRUCTION,
         });
 
-        const result = await chat.sendMessage(finalMessage);
-
-        const response = result.response.text();
-
-        return response;
-
+        const result = await model.generateContent(text);
+        return result.response.text().trim();
     } catch (error) {
-        console.error("Gemini API Error:", error);
-
-        throw new Error(
-            "Agricultural AI Assistant is temporarily unavailable."
-        );
+        console.error("Gemini Translation Error:", error);
+        return text; // Fallback to original text on error
     }
 }
 
 module.exports = {
     getChatResponse,
+    translateText
 };

@@ -23,6 +23,8 @@ function LanguageSelector() {
                 <option value="hi">हिंदी</option>
                 <option value="ta">தமிழ்</option>
                 <option value="kn">ಕನ್ನಡ</option>
+                <option value="ml">മലയാളം</option>
+                <option value="bn">বাংলা</option>
             </select>
         </div>
     );

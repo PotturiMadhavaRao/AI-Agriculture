@@ -452,7 +452,7 @@ function CropRecommendation() {
                                 recommended_crop: result.recommendation.recommended_crop,
                                 confidence: result.recommendation.confidence
                             })}>
-                                🌱 Ask AgriAI about this crop
+                                🌱 {t("cropLifeCycle.askAgriAI")}
                             </button>
                             <button className="btn-secondary" onClick={resetForm}>Start Over</button>
                         </div>

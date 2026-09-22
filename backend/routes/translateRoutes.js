@@ -1,16 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-// A simple translation map for demonstration if API keys are not available.
-// In a real application, you would connect to Google Cloud Translation API or similar here.
-const mockTranslations = {
-    te: {
-        "AI Confidence": "AI విశ్వాసం",
-        "High Risk Detected": "అధిక ప్రమాదం కనుగొనబడింది",
-        "Moderate Risk": "మితమైన ప్రమాదం",
-        "Low Risk": "తక్కువ ప్రమాదం"
-    }
-};
+const { translateText } = require('../services/geminiService');
 
 router.post('/', async (req, res) => {
     try {
@@ -24,20 +14,8 @@ router.post('/', async (req, res) => {
             return res.json({ translatedText: text });
         }
 
-        // Mock translation logic: Prefix the text with the language code to demonstrate it works
-        // Example: If text="Hello", translatedText="[te] Hello"
-        // And check if we have a direct mock match
-        let translatedText = text;
-        
-        if (mockTranslations[targetLanguage] && mockTranslations[targetLanguage][text]) {
-            translatedText = mockTranslations[targetLanguage][text];
-        } else {
-            // Very simple simulated translation for complex strings (just appending language code to show it changed dynamically)
-            // Ideally, this calls `translate.translate(text, targetLanguage)` via Google Cloud
-            if (typeof text === 'string') {
-                translatedText = `[${targetLanguage.toUpperCase()}] ${text}`;
-            }
-        }
+        // Use Gemini API for real agricultural translation
+        const translatedText = await translateText(text, targetLanguage);
 
         res.json({ translatedText });
     } catch (error) {

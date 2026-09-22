@@ -8,6 +8,8 @@ import translationTE from "./locales/te/translation.json";
 import translationHI from "./locales/hi/translation.json";
 import translationTA from "./locales/ta/translation.json";
 import translationKN from "./locales/kn/translation.json";
+import translationML from "./locales/ml/translation.json";
+import translationBN from "./locales/bn/translation.json";
 
 const resources = {
   en: { translation: translationEN },
@@ -15,6 +17,8 @@ const resources = {
   hi: { translation: translationHI },
   ta: { translation: translationTA },
   kn: { translation: translationKN },
+  ml: { translation: translationML },
+  bn: { translation: translationBN },
 };
 
 i18n

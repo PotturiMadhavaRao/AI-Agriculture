@@ -12,7 +12,9 @@
         "myFarm": "My Farm",
         "helpSupport": "Help & Support",
         "agroConnect": "AgroConnect",
-        "farmerSupport": "Farmer Support: 1800-180-1551"
+        "farmerSupport": "Farmer Support: 1800-180-1551",
+        "tagline": "Healthy Crops • Prosperous Farmers",
+        "tollFree": "Toll Free | 24x7"
     },
     "header": {
         "welcome": "Welcome, Farmer",
@@ -20,9 +22,15 @@
         "languageSelect": "Select Language"
     },
     "dashboard": {
+        "heroSubtitle": "SMART AGRICULTURE PLATFORM",
+        "welcomeTitle1": "Welcome to",
         "welcomeTitle": "Welcome to AgriAI",
         "welcomeDesc": "Your smart farming assistant for healthier crops, better decisions and higher yields.",
+        "badgeLine1": "Better Farming",
+        "badgeLine2": "Brighter Future",
         "exploreFeatures": "Explore Features",
+        "sectionSubtitle": "Use AI-powered tools to understand crop health and make informed agricultural decisions.",
+        "motivationalStrip": "Small steps in farming, make a big difference in life!",
         "features": {
             "diseaseDetection": "Identify crop diseases from leaf images instantly.",
             "cropRecommendation": "Find the best crop for your soil and weather.",
@@ -68,8 +76,9 @@
         "aboutCrop": "📖 About",
         "season": "Season",
         "water": "Water",
-        "soilTypes": "Soil Types",
-        "growthDuration": "Growth Duration",
+        "duration": "Growth Duration",
+        "noImage": "No Image Available",
+        "askAgriAI": "Ask AgriAI about this crop",
         "otherSuitableCrops": "Other Suitable Crops",
         "tryAnotherBtn": "🔄 Try Another Farm"
     },
@@ -118,7 +127,8 @@
         "analyzeAnotherBtn": "🔄 Analyze Another Image",
         "errorImage": "Please select a valid image file.",
         "errorBackend": "Unable to analyze the image. Please make sure the backend is running.",
-        "errorSelect": "Please select a crop image first."
+        "errorSelect": "Please select a crop image first.",
+        "askAgriAI": "Ask AgriAI about this disease"
     },
     "diseaseRisk": {
         "pageDescription": "Check the risk level for diseases in your crop based on current weather conditions.",
@@ -157,6 +167,8 @@
         "stage": "Stage",
         "careTips": "🚜 Important Care Tips",
         "monitor": "🔍 What to Monitor",
+        "continueMonitoring": "🔍 Continue monitoring your crop.",
+        "askAgriAI": "Ask AgriAI about this disease",
         "generalAdviceTitle": "General Farming Advice",
         "advice1": "Monitor soil moisture regularly and provide appropriate irrigation.",
         "advice2": "Check plants frequently for early signs of pests and diseases.",
@@ -185,5 +197,73 @@
         "activeIngredient": "Active Ingredient",
         "safetyPrecautions": "⚠️ Safety Precautions",
         "relatedQuestions": "💡 You might also want to know:"
+    },
+    "aiChat": {
+        "title": "AgriAI Assistant",
+        "subtitle": "Your intelligent farming companion",
+        "clearChat": "Clear Chat",
+        "stopSpeaking": "Stop speaking",
+        "listenToResponse": "Listen to response",
+        "stopBtn": "⏹️ Stop",
+        "listenBtn": "🔊 Listen",
+        "thinking": "AgriAI is thinking...",
+        "listeningIn": "Listening in",
+        "placeholder": "Ask about crops, diseases...",
+        "stopListening": "Stop listening",
+        "speakBtn": "Speak to AgriAI",
+        "connectionError": "AI Assistant is temporarily unavailable. Please try again later.",
+        "quota_error": "AI Assistant is temporarily unavailable. Please try again later.",
+        "rate_limit": "The AI Assistant is busy right now. Please wait a few seconds and try again.",
+        "auth_error": "AI Assistant configuration needs attention. Please try again later.",
+        "server_error": "AI Assistant is temporarily unavailable. Please try again shortly.",
+        "network_error": "Unable to connect to the AI service. Please check your connection and try again.",
+        "errorNoHear": "Sorry, I couldn't hear that. Please try again.",
+        "errorMicAccess": "🎤 Please allow microphone access to use voice input.",
+        "errorNetwork": "🎤 Network error occurred during speech recognition.",
+        "welcomeMessage": "👋 Hello! I'm AgriAI Assistant.\n\nI can help you with crop diseases, crop selection, farming practices, soil, irrigation, fertilizers, pests, yield improvement and more.\n\nHow can I help you today?"
+    },
+    "home": {
+        "welcome": "Welcome to AgriAI",
+        "heroTitle1": "AI-Powered Agricultural",
+        "heroTitle2": "Disease Detection",
+        "heroDesc": "Detect crop diseases, understand their causes, predict risks, and get intelligent agricultural recommendations using Artificial Intelligence.",
+        "detectBtn": "Detect Disease",
+        "recommendBtn": "Recommend Crop",
+        "smartAgriculture": "SMART AGRICULTURE",
+        "betterManagement1": "Everything You Need for",
+        "betterManagement2": "Better Crop Management",
+        "platformDesc": "One intelligent platform for disease detection, prediction and agricultural decision support.",
+        "features": {
+            "disease": {
+                "title": "AI Disease Detection",
+                "desc": "Upload a crop or leaf image and use AI to identify possible diseases.",
+                "btn": "Detect Disease"
+            },
+            "recommend": {
+                "title": "Crop Recommendation",
+                "desc": "Get suitable crop recommendations based on soil, weather and environmental conditions.",
+                "btn": "Recommend Crop"
+            },
+            "yield": {
+                "title": "Yield Prediction",
+                "desc": "Estimate expected crop yield using agricultural and environmental data.",
+                "btn": "Predict Yield"
+            },
+            "risk": {
+                "title": "Disease Risk Prediction",
+                "desc": "Predict disease risk using weather, crop conditions and historical information.",
+                "btn": "Check Risk"
+            },
+            "lifecycle": {
+                "title": "Crop Life Cycle",
+                "desc": "Learn about crop growth stages, requirements and common diseases.",
+                "btn": "Explore Crops"
+            },
+            "research": {
+                "title": "Agricultural Research",
+                "desc": "Explore agricultural research, disease information and modern farming knowledge.",
+                "btn": "Research"
+            }
+        }
     }
 }

@@ -17,9 +17,10 @@ const speechLanguages = {
 
 const AgricultureAIChat = () => {
     const { isChatOpen, toggleChat, chatHistory, setChatHistory, contextData, clearChat } = useAgriAI();
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [inputValue, setInputValue] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isCooldown, setIsCooldown] = useState(false);
     const messagesEndRef = useRef(null);
 
     // Voice Input State
@@ -66,9 +67,9 @@ const AgricultureAIChat = () => {
             };
 
             recognition.onerror = (event) => {
-                let msg = "🎤 I couldn't hear you. Please try again.";
-                if (event.error === 'not-allowed') msg = "🎤 Please allow microphone access to use voice input.";
-                if (event.error === 'network') msg = "🎤 Network error occurred during speech recognition.";
+                let msg = t("aiChat.errorNoHear");
+                if (event.error === 'not-allowed') msg = t("aiChat.errorMicAccess");
+                if (event.error === 'network') msg = t("aiChat.errorNetwork");
                 setVoiceError(msg);
                 setIsListening(false);
                 setInterimTranscript("");
@@ -144,16 +145,15 @@ const AgricultureAIChat = () => {
         window.speechSynthesis.speak(utterance);
     };
 
-    // Add welcome message if chat is opened and history is empty
     useEffect(() => {
         if (isChatOpen && chatHistory.length === 0) {
             setChatHistory([{
                 role: 'model',
-                content: "👋 Hello! I'm AgriAI Assistant.\n\nI can help you with crop diseases, crop selection, farming practices, soil, irrigation, fertilizers, pests, yield improvement and more.\n\nHow can I help you today?",
+                content: t("aiChat.welcomeMessage"),
                 isWelcome: true
             }]);
         }
-    }, [isChatOpen, chatHistory, setChatHistory]);
+    }, [isChatOpen, chatHistory, setChatHistory, t]);
 
     // Handle context injected from other modules
     useEffect(() => {
@@ -191,7 +191,7 @@ const AgricultureAIChat = () => {
     }, [contextData, isChatOpen]); 
 
     const handleSendMessage = async (text = inputValue, currentHistory = chatHistory) => {
-        if (!text.trim() || isLoading) return;
+        if (!text.trim() || isLoading || isCooldown) return;
 
         const userMessage = { role: 'user', content: text };
         const newHistory = [...currentHistory, userMessage];
@@ -216,16 +216,24 @@ const AgricultureAIChat = () => {
             if (data.success) {
                 setChatHistory([...newHistory, { role: 'model', content: data.reply }]);
             } else {
-                setChatHistory([...newHistory, { role: 'model', content: data.message || "An error occurred.", isError: true }]);
+                let errorMsg = data.message || "An error occurred.";
+                if (data.errorCategory) {
+                    errorMsg = t(`aiChat.${data.errorCategory}`, { defaultValue: errorMsg });
+                }
+                setChatHistory([...newHistory, { role: 'model', content: errorMsg, isError: true }]);
             }
         } catch (error) {
             setChatHistory([...newHistory, { 
                 role: 'model', 
-                content: "🌱 I'm having trouble connecting right now. Please try again in a moment.", 
+                content: t("aiChat.network_error", { defaultValue: t("aiChat.connectionError") }), 
                 isError: true 
             }]);
         } finally {
             setIsLoading(false);
+            setIsCooldown(true);
+            setTimeout(() => {
+                setIsCooldown(false);
+            }, 3000);
         }
     };
 
@@ -248,12 +256,12 @@ const AgricultureAIChat = () => {
             <div className="agri-ai-chat-panel">
                 <div className="agri-ai-header">
                     <div className="agri-ai-title-wrapper">
-                        <h3 className="agri-ai-title">AgriAI Assistant</h3>
-                        <p className="agri-ai-subtitle">Your intelligent farming companion</p>
+                        <h3 className="agri-ai-title">{t("aiChat.title")}</h3>
+                        <p className="agri-ai-subtitle">{t("aiChat.subtitle")}</p>
                     </div>
                     <div className="header-actions">
-                        <button className="agri-ai-clear-btn" onClick={clearChat} title="Clear Chat">🧹</button>
-                        <button className="agri-ai-close-btn" onClick={toggleChat} title="Close">✕</button>
+                        <button className="agri-ai-clear-btn" onClick={clearChat} title={t("aiChat.clearChat")}>🧹</button>
+                        <button className="agri-ai-close-btn" onClick={toggleChat} title={t("common.close")}>✕</button>
                     </div>
                 </div>
 
@@ -266,10 +274,10 @@ const AgricultureAIChat = () => {
                                     <button 
                                         className="tts-listen-btn" 
                                         onClick={() => handleSpeakResponse(msg.content, idx)}
-                                        title={speakingMessageId === idx ? "Stop speaking" : "Listen to response"}
-                                        aria-label={speakingMessageId === idx ? "Stop speaking" : "Listen to response"}
+                                        title={speakingMessageId === idx ? t("aiChat.stopSpeaking") : t("aiChat.listenToResponse")}
+                                        aria-label={speakingMessageId === idx ? t("aiChat.stopSpeaking") : t("aiChat.listenToResponse")}
                                     >
-                                        {speakingMessageId === idx ? "⏹️ Stop" : "🔊 Listen"}
+                                        {speakingMessageId === idx ? t("aiChat.stopBtn") : t("aiChat.listenBtn")}
                                     </button>
                                 )}
                             </div>
@@ -285,7 +293,7 @@ const AgricultureAIChat = () => {
                             <div className="typing-dot"></div>
                             <div className="typing-dot"></div>
                             <div className="typing-dot"></div>
-                            <span style={{marginLeft: '8px', fontSize: '12px', color: '#666'}}>AgriAI is thinking...</span>
+                            <span style={{marginLeft: '8px', fontSize: '12px', color: '#666'}}>{t("aiChat.thinking")}</span>
                         </div>
                     )}
                     <div ref={messagesEndRef} />
@@ -295,7 +303,7 @@ const AgricultureAIChat = () => {
                     {voiceError && <div className="voice-error-msg">{voiceError}</div>}
                     {isListening && (
                         <div className="voice-listening-indicator">
-                            🎙️ Listening in {languageDisplayNames[i18n.language] || "English"}...
+                            🎙️ {t("aiChat.listeningIn")} {languageDisplayNames[i18n.language] || "English"}...
                         </div>
                     )}
                     
@@ -303,23 +311,23 @@ const AgricultureAIChat = () => {
                         <input 
                             type="text" 
                             className="agri-ai-input" 
-                            placeholder="Ask about crops, diseases..." 
+                            placeholder={t("aiChat.placeholder")} 
                             value={inputValue + (interimTranscript ? ` ${interimTranscript}` : "")}
                             onChange={(e) => {
                                 setInputValue(e.target.value);
                                 setInterimTranscript("");
                             }}
                             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                            disabled={isLoading}
+                            disabled={isLoading || isCooldown}
                         />
                         
                         {voiceSupported && (
                             <button 
                                 className={`voice-input-btn ${isListening ? 'listening' : ''}`}
                                 onClick={handleVoiceToggle}
-                                disabled={isLoading}
-                                title={isListening ? "Stop listening" : "Speak to AgriAI"}
-                                aria-label={isListening ? "Stop listening" : "Speak to AgriAI"}
+                                disabled={isLoading || isCooldown}
+                                title={isListening ? t("aiChat.stopListening") : t("aiChat.speakBtn")}
+                                aria-label={isListening ? t("aiChat.stopListening") : t("aiChat.speakBtn")}
                             >
                                 {isListening ? "🔴" : "🎤"}
                             </button>
@@ -328,7 +336,7 @@ const AgricultureAIChat = () => {
                         <button 
                             className="agri-ai-send-btn" 
                             onClick={() => handleSendMessage()}
-                            disabled={isLoading || (!inputValue.trim() && !interimTranscript.trim())}
+                            disabled={isLoading || isCooldown || (!inputValue.trim() && !interimTranscript.trim())}
                         >
                             ➤
                         </button>
